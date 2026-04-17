@@ -2,6 +2,7 @@
 
 import { alertError } from '@/lib/alerts';
 import { Category, getAllCategories } from '@/services/categoryApi';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
@@ -27,14 +28,18 @@ export default function NavLinks({
       try {
         const data = await getAllCategories();
 
-        const desiredOrder = [
-          'Trang phục nam',
-          'Trang phục nữ',
-          'Phụ kiện',
-        ];
-        const sortedData = desiredOrder
-          .map((name) => data.find((cat) => cat.name === name))
-          .filter(Boolean) as Category[];
+        const desiredOrderBySlug = ['nam', 'nu', 'phu-kien', 'the-thao'];
+        const desiredIndexMap = new Map(
+          desiredOrderBySlug.map((slug, index) => [slug, index]),
+        );
+
+        const sortedData = [...data].sort((a, b) => {
+          const aIndex = desiredIndexMap.get(a.slug_category) ?? Number.MAX_SAFE_INTEGER;
+          const bIndex = desiredIndexMap.get(b.slug_category) ?? Number.MAX_SAFE_INTEGER;
+
+          if (aIndex !== bIndex) return aIndex - bIndex;
+          return a.name.localeCompare(b.name, 'vi');
+        });
 
         setCategories(sortedData);
       } catch (err: unknown) {
@@ -62,7 +67,7 @@ export default function NavLinks({
           const isActive =
             pathname === href || pathname.startsWith(`${href}/`);
           return (
-            <li key={category.id} className="relative group">
+            <li key={category.id} className="relative group pb-2">
               <Link
                 href={href}
                 className={`relative uppercase text-sm font-bold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-500 before:to-purple-600 before:transition-all before:duration-300 before:ease-in-out after:content-[''] after:absolute after:inset-0 after:rounded-lg after:opacity-0 after:transition-all after:duration-300 after:ease-in-out hover:before:w-full hover:after:opacity-100 hover:transform hover:scale-105 ${
@@ -76,8 +81,8 @@ export default function NavLinks({
               </Link>
               {category.subcategories &&
                 category.subcategories.length > 0 && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 z-50 pointer-events-none group-hover:pointer-events-auto">
-                    <div className="relative transform opacity-0 scale-95 translate-y-4 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
+                  <div className="absolute top-full z-[9999] pt-2.5 opacity-0 invisible translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
+                    <div className="relative transform transition-all duration-500 ease-out">
                       <div className="absolute inset-0 bg-white/90 dark:bg-gray/80 backdrop-blur-xl rounded border border-border dark:border-border/90 shadow-2xl"></div>
                       <div className="relative min-w-0 p-8">
                         <div className="flex gap-8 flex-row">
@@ -113,6 +118,19 @@ export default function NavLinks({
                                 })}
                               </div>
                             ),
+                          )}
+                          {category.image && (
+                            <div className="hidden lg:block shrink-0">
+                              <div className="relative h-44 w-72 overflow-hidden rounded-xl border border-border/60 shadow-lg">
+                                <Image
+                                  src={category.image}
+                                  alt={category.name}
+                                  fill
+                                  className="object-cover"
+                                  sizes="288px"
+                                />
+                              </div>
+                            </div>
                           )}
                         </div>
                         <div className="absolute top-4 left-4 w-24 h-24 bg-gradient-to-br from-blue-500/5 to-purple-600/5 rounded-full blur-2xl animate-pulse"></div>

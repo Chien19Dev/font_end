@@ -21,3 +21,23 @@ export async function getAllSubcategories(): Promise<Subcategory[]> {
 
   return res.json();
 }
+
+export async function createSubcategory(data: {
+  name: string;
+  slug: string;
+  categoryId: string;
+}): Promise<Subcategory> {
+  const res = await fetch(`${BASE_URL}/subcategories`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error('Không thể tạo danh mục con');
+  }
+
+  return res.json();
+}

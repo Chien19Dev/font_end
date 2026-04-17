@@ -56,6 +56,10 @@ const data = {
           title: 'Cập nhật danh mục',
           url: '/admin/category',
         },
+        {
+          title: 'Tạo danh mục',
+          url: '/admin/category/create-category',
+        },
       ],
     },
     {

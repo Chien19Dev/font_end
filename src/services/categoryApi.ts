@@ -20,12 +20,30 @@ export interface Category {
   updated_at?: string;
 }
 
+function normalizeCategoriesResponse(payload: unknown): Category[] {
+  if (Array.isArray(payload)) {
+    return payload as Category[];
+  }
+
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    'data' in payload &&
+    Array.isArray((payload as { data?: unknown }).data)
+  ) {
+    return (payload as { data: Category[] }).data;
+  }
+
+  return [];
+}
+
 export async function getAllCategories(): Promise<Category[]> {
   const res = await fetch(`${BASE_URL}/categories`, {
     cache: 'no-store',
   });
   if (!res.ok) throw new Error('Không thể lấy danh sách danh mục');
-  return res.json();
+  const payload: unknown = await res.json();
+  return normalizeCategoriesResponse(payload);
 }
 
 export async function getCategoryBySlug(
@@ -38,7 +56,8 @@ export async function getCategoryBySlug(
     },
   );
   if (!res.ok) return null;
-  const data: Category[] = await res.json();
+  const payload: unknown = await res.json();
+  const data = normalizeCategoriesResponse(payload);
   return data.length > 0 ? data[0] : null;
 }
 
@@ -57,6 +76,25 @@ export async function updateCategory(
   if (!res.ok) throw new Error('Cập nhật danh mục thất bại');
   return res.json();
 }
+
+export async function createCategory(
+  data: Pick<
+    Category,
+    'name' | 'slug_category' | 'category_type' | 'image' | 'description'
+  >,
+): Promise<Category> {
+  const res = await fetch(`${BASE_URL}/categories`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error('Tạo danh mục thất bại');
+  return res.json();
+}
+
 export async function getSubcategoryBySlug(
   categorySlug: string,
   subcategorySlug: string,

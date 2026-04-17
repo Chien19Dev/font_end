@@ -117,7 +117,7 @@ export default function Navbar() {
         </div>
       </div>
       <nav
-        className={`transition-all duration-300 ease-in-out ${isSticky ? 'fixed top-0 left-0 right-0 z-50 border-b border-border/50 shadow-xl backdrop-blur-xl bg-background/95 dark:bg-gray/95 translate-y-0' : 'relative bg-background dark:bg-gray'}`}
+        className={`z-50 transition-all duration-300 ease-in-out ${isSticky ? 'fixed top-0 left-0 right-0 border-b border-border/50 shadow-xl backdrop-blur-xl bg-background/95 dark:bg-gray/95 translate-y-0' : 'relative bg-background dark:bg-gray'}`}
         role="navigation"
         aria-label="Main navigation"
         style={{
@@ -163,7 +163,8 @@ export default function Navbar() {
             </div>
           </div>
           <div
-            className={`hidden sm:flex justify-center transition-all duration-500 ${
+            className={`flex justify-start sm:justify-center transition-all
+            duration-500 ${
               isSticky ? 'py-1.5' : 'py-2.5'
             }`}
           >
