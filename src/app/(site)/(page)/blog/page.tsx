@@ -212,7 +212,7 @@ export default function BlogContent() {
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
+              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 cursor-pointer transform hover:scale-105 ${
                 selectedCategory === category
                   ? 'bg-pink-600 text-white shadow-lg dark:bg-pink-500'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700'
@@ -320,7 +320,7 @@ export default function BlogContent() {
                     {post.date}
                   </span>
                 </div>
-                <button className="w-full mt-4 bg-pink-600 hover:bg-pink-700 dark:bg-pink-500 dark:hover:bg-pink-600 text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 shadow-md hover:shadow-lg group-hover:animate-pulse">
+                <button className="w-full mt-4 bg-pink-600 hover:bg-pink-700 dark:bg-pink-500 dark:hover:bg-pink-600 cursor-pointer text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 shadow-md hover:shadow-lg group-hover:animate-pulse">
                   Đọc tiếp
                   <ChevronRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                 </button>

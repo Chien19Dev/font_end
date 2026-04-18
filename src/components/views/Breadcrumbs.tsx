@@ -36,6 +36,7 @@ const SPECIAL_LABELS: Record<string, string> = {
   policy: 'Chính sách',
   category: 'Danh mục',
   lever: 'Level',
+  'create-category' : 'Tạo danh mục'
 };
 
 function formatSlug(slug: string) {

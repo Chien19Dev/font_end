@@ -173,7 +173,7 @@ export default function CreateCategoryPage() {
   return (
     <div className="mx-auto max-w-full md:px-4 xl:px-12 2xl:px-16 px-4 sm:px-6 lg:px-8 w-full h-full py-8">
       <div className="text-2xl font-semibold mb-6">
-        Tạo danh mục cha và danh mục con
+        Tạo danh mục
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
