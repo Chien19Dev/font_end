@@ -1,8 +1,4 @@
-import {
-  allVouchers,
-  featuredVouchers,
-  Voucher,
-} from '@/data/voucher';
+import { allVouchers, featuredVouchers, Voucher } from '@/data/voucher';
 import { alertSuccess } from '@/lib/alerts';
 import {
   Calendar,
@@ -22,14 +18,10 @@ import { Button } from '../ui/button';
 export default function Discounts() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [copiedCode, setCopiedCode] = useState('');
-  const [savedVouchers, setSavedVouchers] = useState<Set<number>>(
-    new Set(),
-  );
+  const [savedVouchers, setSavedVouchers] = useState<Set<number>>(new Set());
   const [filter, setFilter] = useState('all');
   const [showPopup, setShowPopup] = useState(false);
-  const [popupVoucher, setPopupVoucher] = useState<Voucher | null>(
-    null,
-  );
+  const [popupVoucher, setPopupVoucher] = useState<Voucher | null>(null);
   const getItemsPerSlide = () => {
     if (typeof window !== 'undefined') {
       return window.innerWidth >= 1024 ? 2 : 1;
@@ -49,11 +41,7 @@ export default function Discounts() {
     let isMounted = true;
     const interval = setInterval(() => {
       if (isMounted) {
-        setCurrentSlide(
-          (prev) =>
-            (prev + 1) %
-            Math.ceil(featuredVouchers.length / itemsPerSlide),
-        );
+        setCurrentSlide((prev) => (prev + 1) % Math.ceil(featuredVouchers.length / itemsPerSlide));
       }
     }, 5000);
     return () => {
@@ -98,26 +86,17 @@ export default function Discounts() {
     });
   }, []);
   const nextSlide = () => {
-    setCurrentSlide(
-      (prev) =>
-        (prev + 1) %
-        Math.ceil(featuredVouchers.length / itemsPerSlide),
-    );
+    setCurrentSlide((prev) => (prev + 1) % Math.ceil(featuredVouchers.length / itemsPerSlide));
   };
   const prevSlide = () => {
     setCurrentSlide(
       (prev) =>
-        (prev -
-          1 +
-          Math.ceil(featuredVouchers.length / itemsPerSlide)) %
+        (prev - 1 + Math.ceil(featuredVouchers.length / itemsPerSlide)) %
         Math.ceil(featuredVouchers.length / itemsPerSlide),
     );
   };
   const filteredVouchers = allVouchers.filter(
-    (voucher) =>
-      filter === 'all' ||
-      voucher.category === filter ||
-      voucher.type === filter,
+    (voucher) => filter === 'all' || voucher.category === filter || voucher.type === filter,
   );
   const formatTimeLeft = (timeLeft: {
     days: number;
@@ -148,8 +127,7 @@ export default function Discounts() {
             Ưu Đại Đặc Biệt
           </h1>
           <p className="text-foreground/90 text-lg max-w-2xl mx-auto">
-            Khám phá các mã giảm giá hấp dẫn và tiết kiệm ngay hôm
-            nay!
+            Khám phá các mã giảm giá hấp dẫn và tiết kiệm ngay hôm nay!
           </p>
         </div>
         <section className="mb-16">
@@ -167,60 +145,32 @@ export default function Discounts() {
               }}
             >
               {Array.from({
-                length: Math.ceil(
-                  featuredVouchers.length / itemsPerSlide,
-                ),
+                length: Math.ceil(featuredVouchers.length / itemsPerSlide),
               }).map((_, slideIndex) => (
-                <div
-                  key={slideIndex}
-                  className="w-full flex-shrink-0"
-                >
+                <div key={slideIndex} className="w-full flex-shrink-0">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-3 mb-3">
                     {featuredVouchers
-                      .slice(
-                        slideIndex * itemsPerSlide,
-                        (slideIndex + 1) * itemsPerSlide,
-                      )
+                      .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                       .map((voucher) => (
                         <div
                           key={voucher.id}
                           className={`${voucher.background} relative overflow-hidden rounded-xl p-8 h-80`}
                         >
-                          <div className="absolute inset-0 opacity-10">
-                            <div className="absolute top-4 right-4 text-6xl transform rotate-12">
-                              {voucher.image}
-                            </div>
-                            <div className="absolute bottom-4 left-4 text-4xl transform -rotate-12 opacity-50">
-                              {voucher.image}
-                            </div>
-                          </div>
                           <div className="relative z-10 h-full flex flex-col justify-between text-white">
                             <div className="space-y-4">
                               <div className="flex items-center gap-2 text-sm opacity-90">
                                 {getIcon(voucher.type)}
-                                <span className="uppercase tracking-wide">
-                                  Ưu đãi đặc biệt
-                                </span>
+                                <span className="uppercase tracking-wide">Ưu đãi đặc biệt</span>
                               </div>
-                              <h3 className="text-3xl font-bold leading-tight">
-                                {voucher.title}
-                              </h3>
-                              <p className="text-lg opacity-90">
-                                {voucher.description}
-                              </p>
+                              <h3 className="text-3xl font-bold leading-tight">{voucher.title}</h3>
+                              <p className="text-lg opacity-90">{voucher.description}</p>
                               <div className="flex items-center gap-4">
                                 <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/30">
-                                  <span className="text-sm opacity-80">
-                                    Mã:
-                                  </span>
-                                  <span className="font-mono font-bold ml-2">
-                                    {voucher.code}
-                                  </span>
+                                  <span className="text-sm opacity-80">Mã:</span>
+                                  <span className="font-mono font-bold ml-2">{voucher.code}</span>
                                 </div>
                                 <button
-                                  onClick={() =>
-                                    copyCode(voucher.code)
-                                  }
+                                  onClick={() => copyCode(voucher.code)}
                                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 ${
                                     copiedCode === voucher.code
                                       ? 'bg-green-500 transform scale-105'
@@ -229,13 +179,11 @@ export default function Discounts() {
                                 >
                                   {copiedCode === voucher.code ? (
                                     <>
-                                      <Check className="w-4 h-4" /> Đã
-                                      sao chép!
+                                      <Check className="w-4 h-4" /> Đã sao chép!
                                     </>
                                   ) : (
                                     <>
-                                      <Copy className="w-4 h-4" /> Sao
-                                      chép
+                                      <Copy className="w-4 h-4" /> Sao chép
                                     </>
                                   )}
                                 </button>
@@ -243,9 +191,7 @@ export default function Discounts() {
                             </div>
                             <div className="flex justify-between items-end">
                               <div className="space-y-1">
-                                <p className="text-sm opacity-80">
-                                  Còn lại:
-                                </p>
+                                <p className="text-sm opacity-80">Còn lại:</p>
                                 <div className="flex items-center gap-1 text-lg font-semibold">
                                   <Calendar className="w-4 h-4" />
                                   {formatTimeLeft(voucher.timeLeft)}
@@ -277,17 +223,13 @@ export default function Discounts() {
             </button>
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
               {Array.from({
-                length: Math.ceil(
-                  featuredVouchers.length / itemsPerSlide,
-                ),
+                length: Math.ceil(featuredVouchers.length / itemsPerSlide),
               }).map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
                   className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                    index === currentSlide
-                      ? 'bg-primary w-6'
-                      : 'bg-primary/60'
+                    index === currentSlide ? 'bg-primary w-6' : 'bg-primary/60'
                   }`}
                 />
               ))}
@@ -333,35 +275,19 @@ export default function Discounts() {
                   animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
                 }}
               >
-                <div
-                  className={`${voucher.background || 'bg-gradient-to-r from-background/40 to-background/60'} h-20 relative overflow-hidden`}
-                >
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="absolute top-2 right-2 text-2xl opacity-80">
-                    {voucher.image || '🎉'}
-                  </div>
-                  <div className="absolute bottom-2 left-4">
-                    <div className="flex items-center gap-2 text-foreground">
-                      {getIcon(voucher.type)}
-                      <span className="text-xl font-bold">
-                        {voucher.discount}
-                      </span>
-                    </div>
+                <div className="h-15 flex items-center overflow-hidden bg-blue">
+                  <div className="flex items-center ml-3 space-x-3 text-background">
+                    <div className="flex items-center justify-center">{getIcon(voucher.type)}</div>
+                    <span className="text-xl font-bold">{voucher.discount}</span>
+                    <h3 className="font-semibold">{voucher.title}</h3>
                   </div>
                 </div>
-                <div className="p-4 space-y-3">
-                  <h3 className="font-semibold text-destructive group-hover:text-purple transition-colors duration-300">
-                    {voucher.title}
-                  </h3>
-
-                  <p className="text-sm text-foreground">
-                    {voucher.description}
-                  </p>
+                <div className="p-4 ">
+                  space-y-3
+                  <p className="text-sm text-foreground">{voucher.description}</p>
                   <div className="bg-gray-50 rounded-lg p-3 border-2 border-dashed border-gray-200">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono font-semibold text-purple">
-                        {voucher.code}
-                      </span>
+                      <span className="font-mono font-semibold text-purple">{voucher.code}</span>
                       <button
                         onClick={() => copyCode(voucher.code)}
                         className={`p-1 rounded transition-all duration-300 ${
@@ -380,9 +306,7 @@ export default function Discounts() {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-foreground/80">
                     <Calendar className="w-4 h-4" />
-                    <span>
-                      Còn {formatTimeLeft(voucher.timeLeft)}
-                    </span>
+                    <span>Còn {formatTimeLeft(voucher.timeLeft)}</span>
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -393,9 +317,7 @@ export default function Discounts() {
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
                     >
-                      {savedVouchers.has(voucher.id)
-                        ? '✓ Đã lưu'
-                        : 'Lưu'}
+                      {savedVouchers.has(voucher.id) ? '✓ Đã lưu' : 'Lưu'}
                     </button>
                     <button className="flex-1 bg-purple text-white py-2 px-4 rounded-lg hover:bg-purple/70 transition-all duration-300 transform hover:scale-105 cursor-pointer">
                       Dùng ngay
@@ -407,61 +329,6 @@ export default function Discounts() {
             ))}
           </div>
         </section>
-        {/* {showPopup && popupVoucher && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div
-              className="bg-background/50 border-border/20 border rounded-2xl max-w-md w-full overflow-hidden transform scale-95 animate-bounce-in"
-              style={{
-                animation: 'bounceIn 0.6s ease-out forwards',
-              }}
-            >
-              <div
-                className={`${popupVoucher.background} p-6 text-white relative overflow-hidden`}
-              >
-                <button
-                  onClick={() => setShowPopup(false)}
-                  className="absolute top-4 right-4 text-white/80 hover:text-white p-1 cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-
-                <div className="text-center space-y-2">
-                  <div className="text-4xl mb-2">🎉</div>
-                  <h3 className="text-xl font-bold">
-                    Ưu đãi dành riêng cho bạn!
-                  </h3>
-                  <p className="text-white/90">
-                    {popupVoucher.title}
-                  </p>
-                </div>
-              </div>
-              <div className="p-6 text-center space-y-4">
-                <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-purple/20">
-                  <span className="font-mono font-bold text-purple text-lg">
-                    {popupVoucher.code}
-                  </span>
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      copyCode(popupVoucher.code);
-                      setShowPopup(false);
-                    }}
-                    className="flex-1 bg-purple text-white py-3 px-4 rounded-lg font-semibold hover:bg-purple/70 transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                  >
-                    Lấy mã ngay
-                  </button>
-                  <button
-                    onClick={() => setShowPopup(false)}
-                    className="flex-1 bg-destructive/20 text-destructive py-3 px-4 rounded-lg font-semibold transition-all duration-300 cursor-pointer"
-                  >
-                    Bỏ qua
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
       </div>
     </Fragment>
   );

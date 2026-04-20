@@ -6,7 +6,6 @@ export type Voucher = {
   discount: string;
   type: string;
   background?: string;
-  image?: string;
   category?: string;
   timeLeft: {
     days: number;
@@ -26,7 +25,6 @@ export const featuredVouchers: Voucher[] = [
     background:
       'bg-gradient-to-r from-purple-600 via-purple-700 to-blue-600',
     timeLeft: { days: 2, hours: 10, minutes: 30, seconds: 15 },
-    image: '🎉',
   },
   {
     id: 2,
@@ -38,7 +36,6 @@ export const featuredVouchers: Voucher[] = [
     background:
       'bg-gradient-to-r from-green-500 via-emerald-600 to-teal-600',
     timeLeft: { days: 5, hours: 8, minutes: 45, seconds: 30 },
-    image: '🚚',
   },
   {
     id: 3,
@@ -50,7 +47,6 @@ export const featuredVouchers: Voucher[] = [
     background:
       'bg-gradient-to-r from-orange-500 via-red-500 to-pink-600',
     timeLeft: { days: 12, hours: 6, minutes: 20, seconds: 45 },
-    image: '🔥',
   },
   {
     id: 4,
@@ -62,7 +58,6 @@ export const featuredVouchers: Voucher[] = [
     background:
       'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600',
     timeLeft: { days: 7, hours: 14, minutes: 55, seconds: 10 },
-    image: '🎁',
   },
 ];
 export const allVouchers: Voucher[] = [
