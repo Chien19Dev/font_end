@@ -15,6 +15,35 @@ import Alert from '@/components/views/Alert';
 import { createPrivacyPolicy } from '@/services/policyApi';
 import { useState } from 'react';
 
+const sanitizePolicyHtml = (rawHtml: string) => {
+  if (!rawHtml?.trim()) return '';
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(rawHtml, 'text/html');
+
+  doc.querySelectorAll('script, style, meta, link, iframe, object, embed').forEach((node) => {
+    node.remove();
+  });
+
+  doc.body.querySelectorAll('*').forEach((el) => {
+    [...el.attributes].forEach((attr) => {
+      const name = attr.name.toLowerCase();
+      const keep =
+        name === 'href' ||
+        name === 'src' ||
+        name === 'alt' ||
+        name === 'title' ||
+        name === 'target' ||
+        name === 'rel';
+      if (!keep) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+
+  return doc.body.innerHTML.trim();
+};
+
 export default function CreatePostPage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -36,7 +65,9 @@ export default function CreatePostPage() {
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !content.trim()) {
+    const cleanedContent = sanitizePolicyHtml(content);
+
+    if (!title.trim() || !cleanedContent.trim()) {
       showAlert('Vui lòng nhập đầy đủ tiêu đề và nội dung!', 'error');
       return;
     }
@@ -45,7 +76,7 @@ export default function CreatePostPage() {
     try {
       await createPrivacyPolicy({
         title,
-        content,
+        content: cleanedContent,
         type_policy: typePolicy,
       });
       showAlert('Tạo chính sách thành công!', 'success');

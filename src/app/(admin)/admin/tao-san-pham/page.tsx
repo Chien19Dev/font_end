@@ -25,6 +25,7 @@ import { Category, getAllCategories } from '@/services/categoryApi';
 import {
   createProduct,
   CreateProductData,
+  importProductsByExcel,
 } from '@/services/productsApi';
 import {
   getAllSubcategories,
@@ -68,6 +69,8 @@ export default function CreateProductPage() {
   const [subcategories, setSubcategories] = useState<Subcategory[]>(
     [],
   );
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+  const [importingExcel, setImportingExcel] = useState(false);
 
   useEffect(() => {
     getAllCategories().then(setCategories).catch(console.error);
@@ -216,11 +219,82 @@ export default function CreateProductPage() {
     }
   };
 
+  const handleImportExcel = async () => {
+    if (!excelFile) {
+      showError('Vui lòng chọn file Excel trước khi import.');
+      return;
+    }
+
+    setImportingExcel(true);
+    try {
+      const result = await importProductsByExcel(excelFile);
+      const failedRows = result.errors
+        .slice(0, 5)
+        .map((e) => `Dòng ${e.row}: ${e.message}`)
+        .join('\n');
+
+      if (result.summary.failed > 0) {
+        showSuccess(
+          `Import xong: tạo ${result.summary.created}/${result.summary.totalRows} sản phẩm.\n${failedRows}`,
+        );
+      } else {
+        showSuccess(
+          `Import thành công ${result.summary.created}/${result.summary.totalRows} sản phẩm.`,
+        );
+      }
+      setExcelFile(null);
+    } catch (error) {
+      showError(
+        error instanceof Error ? error.message : 'Import Excel thất bại!',
+      );
+    } finally {
+      setImportingExcel(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 dark:bg-gray">
       <Typography variant="h1" className="text-2xl font-bold mb-6">
         Tạo sản phẩm mới
       </Typography>
+
+      <Card className="mb-6 dark:bg-gray">
+        <CardHeader>
+          <h2 className="text-lg font-semibold">
+            Import hàng loạt bằng Excel
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Cột hỗ trợ: name, description, price, discount_percent,
+            image_url, image_hover_url, category/category_slug/category_id,
+            subcategory/subcategory_slug/subcategory_id, variants (JSON) hoặc
+            variant_colors + variant_sizes + variant_quantities.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={(e) =>
+              setExcelFile(e.target.files?.[0] || null)
+            }
+          />
+          {excelFile && (
+            <p className="text-sm text-muted-foreground">
+              Đã chọn: {excelFile.name}
+            </p>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Button
+            type="button"
+            onClick={handleImportExcel}
+            disabled={importingExcel}
+            className="text-white"
+          >
+            {importingExcel ? 'Đang import...' : 'Import từ Excel'}
+          </Button>
+        </CardFooter>
+      </Card>
 
       <Card className="mb-6 dark:bg-gray">
         <CardHeader className="grid gap-4">

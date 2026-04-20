@@ -19,6 +19,9 @@ const Editor: React.FC<EditorProps> = React.memo(
     const config = {
       readonly: false,
       uploader: { insertImageAsBase64URI: true },
+      askBeforePasteHTML: false,
+      askBeforePasteFromWord: false,
+      defaultActionOnPaste: 'insert_clear_html' as const,
       buttons: [
         'bold',
         'italic',

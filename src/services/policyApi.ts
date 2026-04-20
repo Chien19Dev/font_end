@@ -15,7 +15,7 @@ export async function getPrivacyPolicy(
   type: 'information' | 'faq' = 'information',
 ): Promise<PrivacyPolicy | null> {
   const res = await fetch(`${API_BASE}/get?type=${type}`, {
-    cache: 'no-store',
+    next: { revalidate: 1800 },
   });
   if (!res.ok) return null;
   return res.json();

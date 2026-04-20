@@ -71,7 +71,7 @@ function BreadcrumbPage({
       aria-disabled="true"
       aria-current="page"
       className={cn(
-        'font-normal dark:text-accent-foreground text-gray-800',
+        'font-normal  text-gray-800',
         className,
       )}
       {...props}

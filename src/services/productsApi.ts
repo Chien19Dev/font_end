@@ -34,6 +34,16 @@ export interface CreateProductData {
   variants: Omit<ProductVariant, 'id'>[];
 }
 
+export interface ImportProductsResponse {
+  message: string;
+  summary: {
+    totalRows: number;
+    created: number;
+    failed: number;
+  };
+  errors: { row: number; message: string }[];
+}
+
 export async function getProducts(params?: {
   category_id?: string;
   subcategory_slug?: string;
@@ -104,6 +114,25 @@ export async function deleteProduct(id: string): Promise<void> {
   });
 
   if (!res.ok) throw new Error('Xoá sản phẩm thất bại');
+}
+
+export async function importProductsByExcel(
+  file: File,
+): Promise<ImportProductsResponse> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${BASE_URL}/products/import-excel`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => null);
+    throw new Error(error?.message || 'Import Excel thất bại');
+  }
+
+  return res.json();
 }
 
 export async function getProductDetail(
