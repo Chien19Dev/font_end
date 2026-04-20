@@ -173,7 +173,7 @@ export default function HomeBanner({
                       src={src}
                       alt={`${banner.title} - ảnh ${index + 1}`}
                       fill
-                      className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105"
+                      className=" w-full h-full transition-all duration-700 group-hover:scale-105"
                       unoptimized={true}
                       onLoadingComplete={() => handleImageLoad(index)}
                       onLoadStart={() => handleImageStart(index)}

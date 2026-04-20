@@ -121,18 +121,18 @@ export default function Discounts() {
   };
   return (
     <Fragment>
-      <div className="mx-auto max-w-full md:px-14 xl:px-15 2xl:px-16 px-4 sm:px-6 lg:px-15 w-full h-full py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple to-blue bg-clip-text text-transparent mb-4">
+      <div className="mx-auto h-full w-full max-w-full px-4 py-6 sm:px-6 md:px-10 md:py-8 xl:px-15 2xl:px-16">
+        <div className="mb-8 text-center md:mb-12">
+          <h1 className="mb-3 bg-gradient-to-r from-purple to-blue bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
             Ưu Đại Đặc Biệt
           </h1>
-          <p className="text-foreground/90 text-lg max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-sm text-foreground/90 sm:text-base md:text-lg">
             Khám phá các mã giảm giá hấp dẫn và tiết kiệm ngay hôm nay!
           </p>
         </div>
-        <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-foreground mb-6 flex items-center gap-2">
-            <span className="text-2xl">
+        <section className="mb-10 md:mb-16">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-foreground sm:text-2xl md:mb-6">
+            <span className="text-xl sm:text-2xl">
               <Star className=" fill text-yellow-500" />
             </span>
             Voucher Nổi Bật
@@ -148,23 +148,27 @@ export default function Discounts() {
                 length: Math.ceil(featuredVouchers.length / itemsPerSlide),
               }).map((_, slideIndex) => (
                 <div key={slideIndex} className="w-full flex-shrink-0">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-3 mb-3">
+                  <div className="mb-3 grid grid-cols-1 gap-4 px-1 sm:px-2 lg:grid-cols-2 lg:gap-6 lg:px-3">
                     {featuredVouchers
                       .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                       .map((voucher) => (
                         <div
                           key={voucher.id}
-                          className={`${voucher.background} relative overflow-hidden rounded-xl p-8 h-80`}
+                          className={`${voucher.background} relative h-auto min-h-[320px] overflow-hidden rounded-xl p-4 sm:p-6 lg:h-80 lg:p-8`}
                         >
                           <div className="relative z-10 h-full flex flex-col justify-between text-white">
-                            <div className="space-y-4">
+                            <div className="space-y-3 sm:space-y-4">
                               <div className="flex items-center gap-2 text-sm opacity-90">
                                 {getIcon(voucher.type)}
                                 <span className="uppercase tracking-wide">Ưu đãi đặc biệt</span>
                               </div>
-                              <h3 className="text-3xl font-bold leading-tight">{voucher.title}</h3>
-                              <p className="text-lg opacity-90">{voucher.description}</p>
-                              <div className="flex items-center gap-4">
+                              <h3 className="text-2xl font-bold leading-tight sm:text-3xl">
+                                {voucher.title}
+                              </h3>
+                              <p className="text-sm opacity-90 sm:text-base lg:text-lg">
+                                {voucher.description}
+                              </p>
+                              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                                 <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/30">
                                   <span className="text-sm opacity-80">Mã:</span>
                                   <span className="font-mono font-bold ml-2">{voucher.code}</span>
@@ -189,7 +193,7 @@ export default function Discounts() {
                                 </button>
                               </div>
                             </div>
-                            <div className="flex justify-between items-end">
+                            <div className="mt-5 flex flex-col gap-4 sm:mt-6 sm:flex-row sm:items-end sm:justify-between">
                               <div className="space-y-1">
                                 <p className="text-sm opacity-80">Còn lại:</p>
                                 <div className="flex items-center gap-1 text-lg font-semibold">
@@ -197,7 +201,7 @@ export default function Discounts() {
                                   {formatTimeLeft(voucher.timeLeft)}
                                 </div>
                               </div>
-                              <button className="bg-purple text-popover px-6 py-3 rounded-full font-semibold hover:bg-purple/80 transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer">
+                              <button className="w-full rounded-full bg-purple px-6 py-3 font-semibold text-popover shadow-lg transition-all duration-300 hover:scale-105 hover:bg-purple/80 sm:w-auto cursor-pointer">
                                 Dùng Ngay
                               </button>
                             </div>
@@ -210,18 +214,18 @@ export default function Discounts() {
             </div>
             <button
               onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border border-white/30 p-3 rounded-full text-white hover:bg-white/30 transition-all duration-300"
+              className="absolute left-2 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/30 bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 sm:left-4 sm:block sm:p-3"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
 
             <button
               onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border border-white/30 p-3 rounded-full text-white hover:bg-white/30 transition-all duration-300"
+              className="absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/30 bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 sm:right-4 sm:block sm:p-3"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-1 left-1/2 flex -translate-x-1/2 gap-2 sm:bottom-0">
               {Array.from({
                 length: Math.ceil(featuredVouchers.length / itemsPerSlide),
               }).map((_, index) => (
@@ -237,14 +241,15 @@ export default function Discounts() {
           </div>
         </section>
         <section>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
-              <span className="text-2xl">
+          <div className="mb-4 flex flex-col gap-4 md:mb-6">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground sm:text-2xl">
+              <span className="text-xl sm:text-2xl">
                 <TicketPercent className="text-yellow-500" />
               </span>
               Tất Cả Ưu Đãi
             </h2>
-            <div className="flex gap-2">
+            <div className="-mx-1 overflow-x-auto px-1">
+              <div className="flex w-max gap-2 pb-1">
               {[
                 { key: 'all', label: 'Tất cả' },
                 { key: 'percentage', label: 'Giảm %' },
@@ -255,7 +260,7 @@ export default function Discounts() {
                 <Button
                   key={filterItem.key}
                   onClick={() => setFilter(filterItem.key)}
-                  className={`px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium ${
+                  className={`rounded-full px-3 py-2 text-xs font-medium transition-all duration-300 sm:px-4 sm:text-sm ${
                     filter === filterItem.key
                       ? 'text-foreground shadow-lg transform scale-105'
                       : 'bg-background text-foreground hover-border'
@@ -264,9 +269,10 @@ export default function Discounts() {
                   {filterItem.label}
                 </Button>
               ))}
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredVouchers.map((voucher, index) => (
               <div
                 key={voucher.id}
@@ -276,15 +282,16 @@ export default function Discounts() {
                 }}
               >
                 <div className="h-15 flex items-center overflow-hidden bg-blue">
-                  <div className="flex items-center ml-3 space-x-3 text-background">
+                  <div className="ml-3 flex items-center space-x-2 text-background sm:space-x-3">
                     <div className="flex items-center justify-center">{getIcon(voucher.type)}</div>
-                    <span className="text-xl font-bold">{voucher.discount}</span>
-                    <h3 className="font-semibold">{voucher.title}</h3>
+                    <span className="text-base font-bold sm:text-xl">{voucher.discount}</span>
+                    <h3 className="line-clamp-1 text-sm font-semibold sm:text-base">
+                      {voucher.title}
+                    </h3>
                   </div>
                 </div>
-                <div className="p-4 ">
-                  space-y-3
-                  <p className="text-sm text-foreground">{voucher.description}</p>
+                <div className="space-y-3 p-4">
+                  <p className="text-sm text-foreground line-clamp-2">{voucher.description}</p>
                   <div className="bg-gray-50 rounded-lg p-3 border-2 border-dashed border-gray-200">
                     <div className="flex items-center justify-between">
                       <span className="font-mono font-semibold text-purple">{voucher.code}</span>
@@ -308,7 +315,7 @@ export default function Discounts() {
                     <Calendar className="w-4 h-4" />
                     <span>Còn {formatTimeLeft(voucher.timeLeft)}</span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 sm:flex-row">
                     <button
                       onClick={() => saveVoucher(voucher.id)}
                       className={`flex-1 py-2 px-4 rounded-lg transition-all duration-300 cursor-pointer ${

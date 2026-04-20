@@ -2,18 +2,19 @@
 
 import { ModeToggle } from '@/components/views/ModeToggle';
 import { mainMenu, topMenu } from '@/data/top-bar';
+import { Menu, Search, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import CartButton from './CartButton';
-import MobileMenu from './MobileMenu';
 import NavLinks from './NavLinks';
 import Notifications from './Notifications';
 import SearchCommand from './SearchDropdown';
 import UserMenu from './UserMenu';
 
 export default function Navbar() {
-  const [menuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
@@ -42,6 +43,17 @@ export default function Navbar() {
       window.removeEventListener('scroll', throttledHandleScroll);
   }, [handleScroll]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMenuOpen(false);
+        setMobileSearchOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const topBarOpacity = Math.max(
     0,
     Math.min(1, (100 - scrollY) / 100),
@@ -52,7 +64,7 @@ export default function Navbar() {
       <div
         className={`transition-all duration-300 ease-in-out overflow-hidden ${
           isSticky ? 'max-h-0 opacity-0' : 'max-h-8 opacity-100'
-        }`}
+        } hidden md:block`}
         style={{
           opacity: isSticky ? 0 : topBarOpacity,
           transform: isSticky ? 'translateY(-100%)' : topBarTransform,
@@ -130,10 +142,10 @@ export default function Navbar() {
             isSticky ? 'py-1' : ''
           }`}
         >
-          <div className="flex items-center justify-between gap-4 px-4 py-2">
+          <div className="flex items-center justify-between gap-3 px-2 py-2.5 md:px-4 md:py-3">
             <Link
               href="/"
-              className="group flex items-center gap-3 transition hover:scale-105"
+              className="group hidden items-center gap-3 transition hover:scale-105 lg:flex"
               aria-label="Elysia Wear - Go to homepage"
             >
               <Image
@@ -146,14 +158,18 @@ export default function Navbar() {
               />
               <span
                 className={`font-bold transition group-hover:text-primary ${
-                  isSticky ? 'text-xl' : 'text-2xl'
+                  isSticky ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'
                 }`}
               >
                 Elysia Wear
               </span>
             </Link>
-            <SearchCommand />
-            <div className="flex items-center gap-3 lg:gap-6">
+
+            <div className="hidden lg:block w-full max-w-md">
+              <SearchCommand />
+            </div>
+
+            <div className="hidden lg:flex items-center gap-3 lg:gap-6">
               <UserMenu />
               <Notifications />
               <Link href="/cart" aria-label="View shopping cart">
@@ -161,9 +177,67 @@ export default function Navbar() {
               </Link>
               <ModeToggle />
             </div>
+
+            <div className="flex items-center justify-between gap-2 lg:hidden w-full">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen((prev) => !prev);
+                    if (mobileSearchOpen) setMobileSearchOpen(false);
+                  }}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition hover:bg-muted"
+                  aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                  aria-expanded={menuOpen}
+                  aria-controls="mobile-menu-panel"
+                >
+                  {menuOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
+                </button>
+                <Link
+                  href="/"
+                  className="group flex items-center gap-2"
+                  aria-label="Elysia Wear - Go to homepage"
+                >
+                  <Image
+                    src="/logo.svg"
+                    alt=""
+                    width={26}
+                    height={26}
+                    className="transition group-hover:brightness-110"
+                    priority
+                  />
+                  <span className="text-base font-bold transition group-hover:text-primary">
+                    Elysia Wear
+                  </span>
+                </Link>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileSearchOpen((prev) => !prev);
+                    if (menuOpen) setMenuOpen(false);
+                  }}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition hover:bg-muted"
+                  aria-label={mobileSearchOpen ? 'Close search' : 'Open search'}
+                  aria-expanded={mobileSearchOpen}
+                  aria-controls="mobile-search-panel"
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+                <Link href="/cart" aria-label="View shopping cart">
+                  <CartButton />
+                </Link>
+                <ModeToggle />
+              </div>
+            </div>
           </div>
           <div
-            className={`flex justify-start sm:justify-center transition-all
+            className={`hidden lg:flex justify-start sm:justify-center transition-all
             duration-500 ${
               isSticky ? 'py-1.5' : 'py-2.5'
             }`}
@@ -175,7 +249,74 @@ export default function Navbar() {
             />
           </div>
         </div>
-        {menuOpen && <MobileMenu />}
+        {mobileSearchOpen && (
+          <div
+            id="mobile-search-panel"
+            className="lg:hidden border-t border-border/60 bg-background/95 dark:bg-gray/95 px-4 py-3 shadow-md backdrop-blur-xl"
+          >
+            <SearchCommand />
+          </div>
+        )}
+        {menuOpen && (
+          <div className="lg:hidden border-t border-border/60 bg-background/95 dark:bg-gray/95 px-4 pb-5 pt-4 shadow-xl backdrop-blur-xl">
+            <div
+              id="mobile-menu-panel"
+              className="mx-auto max-h-[75vh] overflow-y-auto rounded-2xl border border-border/50 bg-card/80 p-3 shadow-lg"
+            >
+              <div className="mb-3 rounded-xl bg-background/90 p-2">
+                <SearchCommand />
+              </div>
+
+              <div className="mb-3 flex items-center justify-between rounded-xl border border-border/50 bg-background/70 px-3 py-2">
+                <p className="text-sm font-semibold text-foreground">
+                  Tài khoản & thông báo
+                </p>
+                <div className="flex items-center gap-3">
+                  <UserMenu />
+                  <Notifications />
+                </div>
+              </div>
+
+              <div className="mb-3 rounded-xl border border-border/50 bg-background/70 p-3">
+                <p className="mb-2 text-sm font-semibold text-foreground">
+                  Danh mục nổi bật
+                </p>
+                <div className="overflow-hidden pb-1">
+                  <NavLinks
+                    className="w-full [&_ul]:!grid [&_ul]:grid-cols-2 [&_ul]:gap-2 [&_ul]:!items-stretch [&_ul]:!justify-start [&_li]:!pb-0 [&_a]:!w-full [&_a]:!rounded-lg lg:[&_a]:!border lg:[&_a]:!border-border/40 [&_a]:!bg-card/80 [&_a]:!px-3 [&_a]:!py-2 [&_a]:!text-center [&_a]:!text-xs sm:[&_a]:!text-sm [&_li>div]:hidden"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-2 rounded-xl border border-border/50 bg-background/70 p-3">
+                <p className="mb-1 text-sm font-semibold text-foreground">
+                  Tiện ích nhanh
+                </p>
+                {topMenu.map((item, idx) => (
+                  <Link
+                    key={`mobile-top-${item.href}-${idx}`}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                {mainMenu.map((item, idx) => (
+                  <Link
+                    key={`mobile-main-${item.href}-${idx}`}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    {item.icon && <item.icon className="h-4 w-4" />}
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
     </Fragment>
   );

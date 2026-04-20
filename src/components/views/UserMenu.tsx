@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -27,6 +27,22 @@ import { useRouter } from 'next/navigation';
 export default function UserMenu() {
   const { user, setUser } = useUser();
   const router = useRouter();
+  const getAvatarSrc = (avatar?: string | null) => {
+    if (!avatar || !avatar.trim()) return '/image.webp';
+    const normalized = avatar.trim();
+    if (normalized.startsWith('http://')) {
+      return normalized.replace('http://', 'https://');
+    }
+    return normalized;
+  };
+  const getInitials = (name?: string) => {
+    if (!name) return 'EW';
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'EW';
+    const first = parts[0][0] ?? '';
+    const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    return `${first}${last}`.toUpperCase();
+  };
   const handleLogout = async () => {
     try {
       await logoutApi();
@@ -63,10 +79,13 @@ export default function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Avatar className="w-9 h-9">
           <AvatarImage
-            src={user.avatar || '/image.webp'}
+            src={getAvatarSrc(user.avatar)}
             alt="User Avatar"
             className="cursor-pointer object-cover"
           />
+          <AvatarFallback className="text-xs font-semibold">
+            {getInitials(user.full_name)}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -76,10 +95,13 @@ export default function UserMenu() {
         <DropdownMenuLabel className="flex items-center gap-3">
           <Avatar className="w-10 h-10">
             <AvatarImage
-              src={user.avatar || '/image.webp'}
+              src={getAvatarSrc(user.avatar)}
               alt="User Avatar"
               className="object-cover"
             />
+            <AvatarFallback className="text-xs font-semibold">
+              {getInitials(user.full_name)}
+            </AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-col">
             <span className="truncate text-sm font-medium">

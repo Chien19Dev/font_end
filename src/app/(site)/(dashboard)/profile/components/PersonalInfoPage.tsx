@@ -138,9 +138,9 @@ const PersonalInfoPage = forwardRef<PersonalInfoPageRef>((_, ref) => {
   };
 
   const genderOptions = [
-    { value: '0', label: 'Nam', icon: '👨' },
-    { value: '1', label: 'Nữ', icon: '👩' },
-    { value: '2', label: 'Khác', icon: '🧑' },
+    { value: '0', label: 'Nam' },
+    { value: '1', label: 'Nữ' },
+    { value: '2', label: 'Khác' },
   ];
 
   return (
@@ -482,7 +482,6 @@ const PersonalInfoPage = forwardRef<PersonalInfoPageRef>((_, ref) => {
                         htmlFor={`gender-${option.value}`}
                         className="cursor-pointer font-medium flex items-center gap-2"
                       >
-                        <span className="text-lg">{option.icon}</span>
                         {option.label}
                       </Label>
                     </motion.div>

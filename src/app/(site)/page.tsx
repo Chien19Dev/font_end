@@ -70,7 +70,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
           <HomeBanner />
         </div>
-        <Discounts />
+        {/* <Discounts /> */}
         <div className="py-5 lg:space-y-10">
           {maleProducts.length > 0 && (
             <Section
