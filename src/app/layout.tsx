@@ -7,6 +7,7 @@ import NProgressProvider from '@/components/views/nprogress-provider';
 import { CartProvider } from '@/contexts/CartContext';
 import { UserProvider } from '@/contexts/UserContext';
 import { fontSans } from '@/lib/fonts';
+import ReduxProvider from '@/store/ReduxProvider';
 import { cn } from '@/lib/utils';
 import { Inter } from 'next/font/google';
 import { Suspense } from 'react';
@@ -18,11 +19,7 @@ const inter = Inter({
   weight: ['400'],
 });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" suppressHydrationWarning>
       <body
@@ -31,34 +28,29 @@ export default function RootLayout({
           fontSans,
         )}
       >
-        <SessionProviderWrapper>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* <ActiveThemeProvider> */}
-            <UserProvider>
-              <CartProvider>
-                <Suspense fallback={null}>
-                  <NProgressProvider />
-                </Suspense>
-                <Toaster
-                  richColors
-                  position="top-right"
-                  closeButton={true}
-                  expand={false}
-                />
-                <div className="bg-background dark:bg-gray elysia-wear">
-                  {children}
-                </div>
-                {/* <Chat /> */}
-              </CartProvider>
-            </UserProvider>
-            {/* </ActiveThemeProvider> */}
-          </ThemeProvider>
-        </SessionProviderWrapper>
+        <ReduxProvider>
+          <SessionProviderWrapper>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {/* <ActiveThemeProvider> */}
+              <UserProvider>
+                <CartProvider>
+                  <Suspense fallback={null}>
+                    <NProgressProvider />
+                  </Suspense>
+                  <Toaster richColors position="top-right" closeButton={true} expand={false} />
+                  <div className="bg-background dark:bg-gray elysia-wear">{children}</div>
+                  {/* <Chat /> */}
+                </CartProvider>
+              </UserProvider>
+              {/* </ActiveThemeProvider> */}
+            </ThemeProvider>
+          </SessionProviderWrapper>
+        </ReduxProvider>
         <BackToTop />
       </body>
     </html>

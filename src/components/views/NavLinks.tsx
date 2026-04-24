@@ -2,26 +2,141 @@
 
 import { alertError } from '@/lib/alerts';
 import { Category, getAllCategories } from '@/services/categoryApi';
+import {
+  Box,
+  Container,
+  Divider,
+  Link as MuiLink,
+  Paper,
+  Popover,
+  Stack,
+  Typography,
+} from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
-function chunkArray<T>(arr: T[], size: number): T[][] {
-  const result: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
+type MegaSubcategory = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+function normalizeKeyword(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-export default function NavLinks({
-  className = '',
-}: {
-  className?: string;
-}) {
+function classifySubcategoryBySlug(sub: MegaSubcategory) {
+  const slug = normalizeKeyword(sub.slug || '');
+  const name = normalizeKeyword(sub.name || '');
+  const key = `${slug} ${name}`;
+  if (
+    slug.includes('quan-lot') ||
+    slug.includes('do-lot') ||
+    slug.includes('brief') ||
+    slug.includes('trunk') ||
+    slug.includes('boxer') ||
+    key.includes('quan lot')
+  ) {
+    return 'quan-lot';
+  }
+
+  if (
+    slug.startsWith('ao-') ||
+    slug.includes('-ao-') ||
+    slug.includes('tanktop') ||
+    slug.includes('so-mi') ||
+    slug.includes('polo') ||
+    slug.includes('thun') ||
+    slug.includes('khoac') ||
+    key.startsWith('ao ')
+  ) {
+    return 'ao';
+  }
+
+  if (
+    slug.startsWith('quan-') ||
+    slug.includes('-quan-') ||
+    slug.includes('short') ||
+    slug.includes('jogger') ||
+    slug.includes('jean') ||
+    slug.includes('kaki') ||
+    slug.includes('boi') ||
+    key.startsWith('quan ')
+  ) {
+    return 'quan';
+  }
+
+  if (
+    slug.includes('phu-kien') ||
+    slug.includes('tat') ||
+    slug.includes('mu') ||
+    slug.includes('vi') ||
+    slug.includes('tui') ||
+    slug.includes('that-lung') ||
+    key.includes('phu kien')
+  ) {
+    return 'phu-kien';
+  }
+
+  return 'other';
+}
+
+function buildSubcategoryColumns(subcategories: MegaSubcategory[]) {
+  const columns = [
+    {
+      key: 'ao',
+      label: 'Áo Nam',
+      items: [] as MegaSubcategory[],
+    },
+    {
+      key: 'quan',
+      label: 'Quần Nam',
+      items: [] as MegaSubcategory[],
+    },
+    {
+      key: 'quan-lot',
+      label: 'Quần lót nam',
+      items: [] as MegaSubcategory[],
+    },
+    {
+      key: 'phu-kien',
+      label: 'Phu kien',
+      items: [] as MegaSubcategory[],
+    },
+  ];
+
+  const remaining: MegaSubcategory[] = [];
+  subcategories.forEach((sub) => {
+    const bucket = classifySubcategoryBySlug(sub);
+    if (bucket === 'ao') columns[0].items.push(sub);
+    else if (bucket === 'quan') columns[1].items.push(sub);
+    else if (bucket === 'quan-lot') columns[2].items.push(sub);
+    else if (bucket === 'phu-kien') columns[3].items.push(sub);
+    else remaining.push(sub);
+  });
+
+  if (remaining.length) {
+    columns[1].items.push(...remaining);
+  }
+
+  return columns.filter((column) => column.items.length > 0);
+}
+
+export default function NavLinks({ className = '' }: { className?: string }) {
   const pathname = usePathname();
   const [categories, setCategories] = React.useState<Category[]>([]);
+  const [activeCategoryId, setActiveCategoryId] = React.useState<string | null>(null);
+  const [menuPosition, setMenuPosition] = React.useState({ top: 0, left: 0 });
+  const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     async function fetchCategories() {
@@ -29,9 +144,7 @@ export default function NavLinks({
         const data = await getAllCategories();
 
         const desiredOrderBySlug = ['nam', 'nu', 'phu-kien', 'the-thao'];
-        const desiredIndexMap = new Map(
-          desiredOrderBySlug.map((slug, index) => [slug, index]),
-        );
+        const desiredIndexMap = new Map(desiredOrderBySlug.map((slug, index) => [slug, index]));
 
         const sortedData = [...data].sort((a, b) => {
           const aIndex = desiredIndexMap.get(a.slug_category) ?? Number.MAX_SAFE_INTEGER;
@@ -53,119 +166,304 @@ export default function NavLinks({
     fetchCategories();
   }, []);
 
+  React.useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
+
+  const clearCloseTimer = React.useCallback(() => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const openMegaMenu = React.useCallback(
+    (categoryId: string) => {
+      clearCloseTimer();
+      setActiveCategoryId(categoryId);
+    },
+    [clearCloseTimer],
+  );
+
+  const scheduleCloseMegaMenu = React.useCallback(() => {
+    clearCloseTimer();
+    closeTimerRef.current = setTimeout(() => {
+      setActiveCategoryId(null);
+    }, 120);
+  }, [clearCloseTimer]);
+
   const staticLinks = [
     { name: 'Liên hệ', href: '/lien-he' },
     { name: 'Về chúng tôi', href: '/ve-chung-toi' },
     { name: 'Blog', href: '/blog' },
   ];
+  const activeCategory = categories.find((category) => category.id === activeCategoryId) || null;
+  const activeCategoryHref = activeCategory ? `/${activeCategory.slug_category}` : '';
+  const groupedColumns = React.useMemo(
+    () => buildSubcategoryColumns((activeCategory?.subcategories || []) as MegaSubcategory[]),
+    [activeCategory],
+  );
+
+  React.useEffect(() => {
+    const updateMenuPosition = () => {
+      if (!navRef.current || typeof window === 'undefined') return;
+      const rect = navRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: Math.round(rect.bottom + window.scrollY + 8),
+        left: Math.round(window.innerWidth / 2),
+      });
+    };
+
+    updateMenuPosition();
+    window.addEventListener('resize', updateMenuPosition);
+    window.addEventListener('scroll', updateMenuPosition, { passive: true });
+    return () => {
+      window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('scroll', updateMenuPosition);
+    };
+  }, [activeCategoryId]);
 
   return (
-    <nav className={`relative w-full ${className}`}>
-      <ul className="flex w-full items-center justify-center gap-5">
+    <Box
+      ref={navRef}
+      className={className}
+      sx={{ width: '100%', position: 'relative' }}
+      onMouseLeave={scheduleCloseMegaMenu}
+    >
+      <Stack
+        direction="row"
+        spacing={0.5}
+        sx={{
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         {categories.map((category) => {
           const href = `/${category.slug_category}`;
-          const isActive =
-            pathname === href || pathname.startsWith(`${href}/`);
+          const isActive = pathname === href || pathname.startsWith(`${href}/`);
           return (
-            <li key={category.id} className="group">
-              <Link
+            <Box key={category.id} onMouseEnter={() => openMegaMenu(category.id)}>
+              <MuiLink
+                component={Link}
                 href={href}
-                className={`relative uppercase text-sm font-bold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-500 before:to-purple-600 before:transition-all before:duration-300 before:ease-in-out after:content-[''] after:absolute after:inset-0 after:rounded-lg after:opacity-0 after:transition-all after:duration-300 after:ease-in-out hover:before:w-full hover:after:opacity-100 hover:transform hover:scale-105 ${
-                  isActive
-                    ? 'text-blue-600 dark:text-blue-400 before:w-full after:opacity-100'
-                    : 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                }
-                `}
+                underline="none"
+                color="inherit"
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  px: 1.8,
+                  py: 0.9,
+                  borderRadius: 1.5,
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  color: isActive ? 'primary.main' : 'text.primary',
+                  borderBottom: '2px solid',
+                  borderBottomColor: isActive ? 'primary.main' : 'transparent',
+                  transition: 'all 0.18s ease',
+                  '&:hover': {
+                    color: 'primary.main',
+                    bgcolor: 'action.hover',
+                    borderBottomColor: 'primary.main',
+                  },
+                }}
               >
                 {category.name}
-              </Link>
-              {category.subcategories &&
-                category.subcategories.length > 0 && (
-                  <div className="absolute inset-x-0 top-full z-[9999] pt-3 opacity-0 invisible translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                    <div className="relative mx-auto w-full max-w-[1800px] px-3 sm:px-6 lg:px-10">
-                      <div className="relative transform overflow-hidden rounded-2xl border border-border dark:border-border/90 shadow-2xl transition-all duration-500 ease-out">
-                        <div className="absolute inset-0 bg-white/90 dark:bg-gray/80 backdrop-blur-xl"></div>
-                        <div className="relative min-w-0 p-5 sm:p-6 lg:p-8">
-                          <div className="flex flex-wrap gap-6 lg:flex-nowrap lg:gap-8">
-                          {chunkArray(category.subcategories, 3).map(
-                            (group, idx) => (
-                              <div
-                                key={idx}
-                                className="flex min-w-[150px] flex-col space-y-2"
-                                style={{
-                                  animationDelay: `${idx * 100}ms`,
-                                }}
-                              >
-                                {group.map((sub, subIdx) => {
-                                  const subHref = `${href}/${sub.slug}`;
-                                  const isSubActive =
-                                    pathname === subHref;
-
-                                  return (
-                                    <Link
-                                      key={sub.id}
-                                      href={subHref}
-                                      className={`relative group/item px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ease-out transform hover:transition-all before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-500 before:to-purple-600 before:transition-all before:duration-300 before:ease-out after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-r after:from-blue-500/10 after:via-purple-500/10 after:to-pink-500/10 after:rounded-lg after:opacity-0 after:transition-all after:duration-300 after:ease-out hover:before:w-2 hover:after:opacity-100 hover:shadow-lg hover:shadow-blue-500/10 cursor-pointer whitespace-nowrap ${
-                                        isSubActive
-                                          ? 'text-blue dark:text-blue before:w-2 after:opacity-100 shadow-lg shadow-blue-500/10'
-                                          : 'text-gray/80 dark:text-foreground hover:text-gray dark:hover:text-white'
-                                      }`}
-                                    >
-                                      <span className="relative z-10 transition-all duration-300">
-                                        {sub.name}
-                                      </span>
-                                    </Link>
-                                  );
-                                })}
-                              </div>
-                            ),
-                          )}
-                            {category.image && (
-                              <div className="hidden xl:block shrink-0 ml-auto">
-                                <div className="relative h-44 w-72 overflow-hidden rounded-xl border border-border/60 shadow-lg">
-                                <Image
-                                  src={category.image}
-                                  alt={category.name}
-                                  fill
-                                  className="object-cover"
-                                  sizes="288px"
-                                />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="absolute top-4 left-4 w-24 h-24 bg-gradient-to-br from-blue-500/5 to-purple-600/5 rounded-full blur-2xl animate-pulse"></div>
-                        <div
-                          className="absolute bottom-4 right-4 w-20 h-20 bg-gradient-to-tr from-purple-500/5 to-pink-500/5 rounded-full blur-2xl animate-pulse"
-                          style={{ animationDelay: '1s' }}
-                        ></div>
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-            </li>
+              </MuiLink>
+            </Box>
           );
         })}
         {staticLinks.map((link) => {
           const isActive = pathname === link.href;
           return (
-            <li key={link.name}>
-              <Link
+            <Box key={link.name} onMouseEnter={scheduleCloseMegaMenu}>
+              <MuiLink
+                component={Link}
                 href={link.href}
-                className={`relative uppercase text-sm font-bold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-500 before:to-purple-600 before:transition-all before:duration-300 before:ease-in-out after:content-[''] after:absolute after:inset-0 after:rounded-lg after:opacity-0 after:transition-all after:duration-300 after:ease-in-out hover:before:w-full hover:after:opacity-100 hover:transform hover:scale-105 ${
-                  isActive
-                    ? 'text-blue-600 dark:text-blue-400 before:w-full after:opacity-100'
-                    : 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                }`}
+                underline="none"
+                color="inherit"
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  px: 1.8,
+                  py: 0.9,
+                  borderRadius: 1.5,
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  color: isActive ? 'primary.main' : 'text.primary',
+                  borderBottom: '2px solid',
+                  borderBottomColor: isActive ? 'primary.main' : 'transparent',
+                  transition: 'all 0.18s ease',
+                  '&:hover': {
+                    color: 'primary.main',
+                    bgcolor: 'action.hover',
+                    borderBottomColor: 'primary.main',
+                  },
+                }}
               >
                 {link.name}
-              </Link>
-            </li>
+              </MuiLink>
+            </Box>
           );
         })}
-      </ul>
-    </nav>
+      </Stack>
+
+      <Popover
+        open={Boolean(activeCategory) && Boolean(activeCategory?.subcategories?.length)}
+        anchorReference="anchorPosition"
+        anchorPosition={menuPosition}
+        onClose={() => setActiveCategoryId(null)}
+        disableAutoFocus
+        disableEnforceFocus
+        disableRestoreFocus
+        marginThreshold={0}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        slotProps={{
+          paper: {
+            onMouseEnter: clearCloseTimer,
+            onMouseLeave: scheduleCloseMegaMenu,
+            sx: {
+              width: 'calc(100vw - 12px)',
+              maxWidth: 'none',
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider',
+              overflow: 'hidden',
+              boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.12)',
+            },
+          },
+        }}
+      >
+        {activeCategory && activeCategory.subcategories?.length ? (
+          <Container maxWidth={false} sx={{ px: { xs: 2, md: 3 }, py: 2.5 }}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  lg: 'minmax(0, 1fr) 320px',
+                },
+                gap: 2.5,
+              }}
+            >
+              <Box>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 700, mb: 1.5, textTransform: 'uppercase' }}
+                >
+                  {activeCategory.name}
+                </Typography>
+                <Divider sx={{ mb: 1.5 }} />
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: {
+                      xs: 'repeat(2, minmax(0,1fr))',
+                      lg: 'repeat(4, minmax(0,1fr))',
+                    },
+                    gap: 1.5,
+                  }}
+                >
+                  {groupedColumns.map((column) => (
+                    <Box
+                      key={column.key}
+                      sx={{
+                        minWidth: 0,
+                        pr: { lg: 1.5 },
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          pb: 0.8,
+                          fontSize: 13,
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          color: 'text.primary',
+                        }}
+                      >
+                        {column.label}
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 0.4,
+                        }}
+                      >
+                        {column.items.map((sub) => {
+                          const subHref = `${activeCategoryHref}/${sub.slug}`;
+                          const isSubActive = pathname === subHref;
+                          return (
+                            <MuiLink
+                              key={sub.id}
+                              component={Link}
+                              href={subHref}
+                              underline="none"
+                              color="inherit"
+                              sx={{
+                                px: 0.5,
+                                py: 0.45,
+                                borderRadius: 0.8,
+                                border: '1px solid transparent',
+                                bgcolor: 'transparent',
+                                color: isSubActive ? 'primary.main' : 'text.secondary',
+                                fontSize: 13,
+                                fontWeight: isSubActive ? 700 : 500,
+                                transition: 'all 0.16s ease',
+                                '&:hover': {
+                                  borderColor: 'primary.main',
+                                  bgcolor: 'action.hover',
+                                  color: 'primary.main',
+                                },
+                              }}
+                            >
+                              {sub.name}
+                            </MuiLink>
+                          );
+                        })}
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+
+              {activeCategory.image && (
+                <Paper
+                  variant="outlined"
+                  sx={{
+                    position: 'relative',
+                    minHeight: 300,
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Image
+                    src={activeCategory.image}
+                    alt={activeCategory.name}
+                    fill
+                    className="object-cover"
+                    sizes="320px"
+                  />
+                </Paper>
+              )}
+            </Box>
+          </Container>
+        ) : (
+          <Box
+            sx={{
+              px: 3,
+              py: 2,
+            }}
+          ></Box>
+        )}
+      </Popover>
+    </Box>
   );
 }
