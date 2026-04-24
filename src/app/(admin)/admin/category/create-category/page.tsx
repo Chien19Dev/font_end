@@ -38,6 +38,7 @@ type SubcategoryForm = {
   name: string;
   slug: string;
   categoryId: string;
+  menu_group: 'ao' | 'quan' | 'quan-lot' | 'phu-kien' | 'other';
 };
 
 const createSlug = (value: string) =>
@@ -72,6 +73,7 @@ export default function CreateCategoryPage() {
       name: '',
       slug: '',
       categoryId: '',
+      menu_group: 'other',
     },
   );
 
@@ -152,6 +154,7 @@ export default function CreateCategoryPage() {
         name: subcategoryForm.name.trim(),
         slug: subcategoryForm.slug.trim(),
         categoryId: subcategoryForm.categoryId,
+        menu_group: subcategoryForm.menu_group,
       });
 
       setAlertType('success');
@@ -160,6 +163,7 @@ export default function CreateCategoryPage() {
         name: '',
         slug: '',
         categoryId: '',
+        menu_group: 'other',
       });
     } catch (error) {
       console.error('Tạo danh mục con thất bại:', error);
@@ -293,6 +297,27 @@ export default function CreateCategoryPage() {
                     {category.name}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={subcategoryForm.menu_group}
+              onValueChange={(value) =>
+                setSubcategoryForm((prev) => ({
+                  ...prev,
+                  menu_group: value as SubcategoryForm['menu_group'],
+                }))
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Chọn nhóm menu" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ao">Ao</SelectItem>
+                <SelectItem value="quan">Quan</SelectItem>
+                <SelectItem value="quan-lot">Quan lot</SelectItem>
+                <SelectItem value="phu-kien">Phu kien</SelectItem>
+                <SelectItem value="other">Khac</SelectItem>
               </SelectContent>
             </Select>
 

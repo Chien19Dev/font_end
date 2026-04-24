@@ -21,6 +21,7 @@ type MegaSubcategory = {
   id: string;
   name: string;
   slug: string;
+  menu_group?: 'ao' | 'quan' | 'quan-lot' | 'phu-kien' | 'other';
 };
 
 function normalizeKeyword(value: string) {
@@ -33,7 +34,11 @@ function normalizeKeyword(value: string) {
     .trim();
 }
 
-function classifySubcategoryBySlug(sub: MegaSubcategory) {
+function classifySubcategory(sub: MegaSubcategory) {
+  if (sub.menu_group && sub.menu_group !== 'other') {
+    return sub.menu_group;
+  }
+
   const slug = normalizeKeyword(sub.slug || '');
   const name = normalizeKeyword(sub.name || '');
   const key = `${slug} ${name}`;
@@ -115,7 +120,7 @@ function buildSubcategoryColumns(subcategories: MegaSubcategory[]) {
 
   const remaining: MegaSubcategory[] = [];
   subcategories.forEach((sub) => {
-    const bucket = classifySubcategoryBySlug(sub);
+    const bucket = classifySubcategory(sub);
     if (bucket === 'ao') columns[0].items.push(sub);
     else if (bucket === 'quan') columns[1].items.push(sub);
     else if (bucket === 'quan-lot') columns[2].items.push(sub);

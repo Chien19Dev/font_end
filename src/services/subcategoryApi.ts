@@ -6,6 +6,7 @@ export interface Subcategory {
   name: string;
   slug: string;
   categoryId: string;
+  menu_group?: 'ao' | 'quan' | 'quan-lot' | 'phu-kien' | 'other';
   created_at?: string;
   updated_at?: string;
 }
@@ -26,6 +27,7 @@ export async function createSubcategory(data: {
   name: string;
   slug: string;
   categoryId: string;
+  menu_group?: 'ao' | 'quan' | 'quan-lot' | 'phu-kien' | 'other';
 }): Promise<Subcategory> {
   const res = await fetch(`${BASE_URL}/subcategories`, {
     method: 'POST',
