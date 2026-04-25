@@ -1,20 +1,13 @@
 'use client';
 
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PolicyContent from './policyContent';
 
 interface ProductTabsProps {
   description: string;
 }
 
-export default function ProductTabs({
-  description,
-}: ProductTabsProps) {
+export default function ProductTabs({ description }: ProductTabsProps) {
   return (
     <div className="mt-10 w-full lg:max-w-6xl mx-auto">
       <Tabs defaultValue="description" className="w-full">

@@ -8,7 +8,7 @@ export default function PolicyContent() {
     <Fragment>
       <div className="mx-auto max-w-full px-2 lg:px-4 w-full h-full py-8">
         <Image
-          src="/csdt.jpg"
+          src="/public/csdt.png"
           alt="chính sách đổi hàng online"
           width={890}
           height={1115}
@@ -16,10 +16,7 @@ export default function PolicyContent() {
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
           {policyItems.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex justify-start items-center"
-            >
+            <div key={idx} className="flex justify-start items-center">
               <div className="m-[22px_10px] lg:m-[42px_20px] rounded">
                 <Link href={item.href} className="text-foreground">
                   <div className="flex gap-1.5">
@@ -32,9 +29,7 @@ export default function PolicyContent() {
                       className="rounded"
                     />
                     <div className="uppercase items-center">
-                      <div className="font-bold text-base">
-                        {item.title}
-                      </div>
+                      <div className="font-bold text-base">{item.title}</div>
                       <div className="text-sm">{item.desc}</div>
                     </div>
                   </div>
@@ -43,6 +38,9 @@ export default function PolicyContent() {
             </div>
           ))}
         </div>
+        <Link href="/dich-vu-60-ngay-doi-tra" className="block text-xl text-center text-foreground">
+          Xem chi tiết dịch vụ đổi trả
+        </Link>
       </div>
     </Fragment>
   );
