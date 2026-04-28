@@ -1,18 +1,13 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import Breadcrumbs from '@/components/views/Breadcrumbs';
-import {
-  ChevronRight,
-  Clock,
-  Eye,
-  Heart,
-  Share2,
-  Star,
-  TrendingUp,
-  User,
-  Zap,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChevronRight, Clock, Eye, Heart, Share2, Star, TrendingUp, User, Zap } from 'lucide-react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Fade from '@mui/material/Fade';
+import Zoom from '@mui/material/Zoom';
+import { useEffect, useRef, useState } from 'react';
 
 const blogPosts = [
   {
@@ -39,8 +34,7 @@ const blogPosts = [
     date: '1 ngày trước',
     readTime: '8 phút',
     category: 'Công sở',
-    image:
-      'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=400&h=250&fit=crop',
+    image: 'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=400&h=250&fit=crop',
     likes: 167,
     views: 2890,
   },
@@ -53,8 +47,7 @@ const blogPosts = [
     date: '3 ngày trước',
     readTime: '6 phút',
     category: 'Street Style',
-    image:
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=250&fit=crop',
+    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=250&fit=crop',
     likes: 189,
     views: 1567,
   },
@@ -81,8 +74,7 @@ const blogPosts = [
     date: '1 tuần trước',
     readTime: '7 phút',
     category: 'Phụ kiện',
-    image:
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=250&fit=crop',
+    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=250&fit=crop',
     likes: 78,
     views: 1456,
   },
@@ -95,8 +87,7 @@ const blogPosts = [
     date: '2 tuần trước',
     readTime: '10 phút',
     category: 'Bền vững',
-    image:
-      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=250&fit=crop',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=250&fit=crop',
     likes: 92,
     views: 1890,
   },
@@ -111,14 +102,27 @@ const categories = [
   'Phụ kiện',
   'Bền vững',
 ];
-
 export default function BlogContent() {
-  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+  const [tabIndex, setTabIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [isVisible, setIsVisible] = useState(false);
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const [gridVisible, setGridVisible] = useState(true);
+  const selectedCategory = categories[activeIndex];
+  const filteredPosts = blogPosts.filter(
+    (post) => selectedCategory === 'Tất cả' || post.category === selectedCategory,
+  );
+
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+    if (newValue === tabIndex) return;
+    setGridVisible(false);
+    setTimeout(() => {
+      setActiveIndex(newValue);
+      setTabIndex(newValue);
+      setGridVisible(true);
+    }, 200);
+  };
+
   const handleLike = (postId: any) => {
     const newLikedPosts = new Set(likedPosts);
     if (newLikedPosts.has(postId)) {
@@ -128,14 +132,14 @@ export default function BlogContent() {
     }
     setLikedPosts(newLikedPosts);
   };
-  const filteredPosts = blogPosts.filter(
-    (post) =>
-      selectedCategory === 'Tất cả' ||
-      post.category === selectedCategory,
-  );
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-12">
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden mb-0">
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -150,11 +154,7 @@ export default function BlogContent() {
             <Breadcrumbs />
           </div>
           <div
-            className={`transform py-12 transition-all duration-1000 ${
-              isVisible
-                ? 'translate-y-0 opacity-100'
-                : 'translate-y-10 opacity-0'
-            }`}
+            className={`transform py-12 transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
           >
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
               <span
@@ -175,20 +175,16 @@ export default function BlogContent() {
                 </span>
               </span>
             </h1>
-
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Chia sẻ xu hướng, bí quyết phối đồ và những cảm hứng
-              thời trang mới nhất từ cộng đồng fashionista Việt Nam
+              Chia sẻ xu hướng, bí quyết phối đồ và những cảm hứng thời trang mới nhất từ cộng đồng
+              fashionista Việt Nam
             </p>
-
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button className="px-8 py-4 bg-pink-600 text-white rounded-full font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 hover:bg-pink-700">
-                <Zap className="w-5 h-5" />
-                Khám phá ngay
+                <Zap className="w-5 h-5" /> Khám phá ngay
               </button>
               <button className="px-8 py-4 border-2 border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white dark:text-pink-400 dark:border-pink-400 dark:hover:bg-pink-400 dark:hover:text-white rounded-full font-semibold transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                Xu hướng hot
+                <TrendingUp className="w-5 h-5" /> Xu hướng hot
               </button>
             </div>
           </div>
@@ -206,141 +202,137 @@ export default function BlogContent() {
           style={{ animationDelay: '0.5s' }}
         />
       </section>
-      <section className="py-4">
-        <div className="flex flex-wrap gap-3 justify-center">
-          {categories.map((category, index) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 cursor-pointer transform hover:scale-105 ${
-                selectedCategory === category
-                  ? 'bg-pink-600 text-white shadow-lg dark:bg-pink-500'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700'
-              }`}
-              style={{
-                transform: isVisible
-                  ? 'translateY(0)'
-                  : 'translateY(20px)',
-                opacity: isVisible ? 1 : 0,
-                transition: `all 0.5s ease-out ${index * 0.1}s`,
-              }}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+      <section className="py-4 mb-0">
+        <Box sx={{ width: '100%' }}>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            sx={{
+              '& .MuiTabs-indicator': {
+                backgroundColor: '#db2777',
+                height: 3,
+                borderRadius: '3px 3px 0 0',
+              },
+              '& .MuiTab-root': {
+                textTransform: 'none',
+                fontWeight: 500,
+                fontSize: '0.95rem',
+                color: '#6b7280',
+                minWidth: 'auto',
+                px: 2,
+                '&:hover': { color: '#db2777' },
+                '&.Mui-selected': { color: '#db2777', fontWeight: 700 },
+              },
+              '& .MuiTabs-scrollButtons': { color: '#db2777' },
+            }}
+          >
+            {categories.map((category) => (
+              <Tab key={category} label={category} />
+            ))}
+          </Tabs>
+        </Box>
       </section>
-      <section className="py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map((post, index) => (
-            <article
-              key={post.id}
-              className={`group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] hover:-rotate-1 transform ${
-                isVisible
-                  ? 'translate-y-0 opacity-100'
-                  : 'translate-y-10 opacity-0'
-              }`}
-              style={{
-                transitionDelay: `${index * 0.15}s`,
-              }}
-            >
-              {post.featured && (
-                <div className="absolute top-4 left-4 z-10">
-                  <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
-                    <Star className="w-3 h-3" />
-                    Nổi bật
-                  </div>
-                </div>
-              )}
-              <div className="relative overflow-hidden">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1 bg-white/90 dark:bg-gray/70 text-gray dark:text-white backdrop-blur-sm rounded-full text-xs font-semibold border border-white/20">
-                    {post.category}
-                  </span>
-                </div>
-                <div className="absolute bottom-4 right-4 flex items-center gap-1 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Eye className="w-3 h-3" />
-                  {post.views}
-                </div>
-              </div>
-              <div className="p-6 space-y-4">
-                <h2 className="text-xl font-bold line-clamp-2 text-gray dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors duration-300">
-                  {post.title}
-                </h2>
-
-                <p className="text-gray-600 dark:text-gray-300 line-clamp-2 text-sm leading-relaxed">
-                  {post.excerpt}
-                </p>
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1">
-                      <User className="w-3 h-3" />
-                      <span className="font-medium">
-                        {post.author}
+      <section className="py-4">
+        <Fade in={gridVisible} timeout={{ enter: 350, exit: 200 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post, index) => (
+              <Zoom
+                key={post.id}
+                in={gridVisible}
+                timeout={{ enter: 350, exit: 150 }}
+                style={{ transitionDelay: gridVisible ? `${index * 70}ms` : '0ms' }}
+              >
+                <article className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+                  {post.featured && (
+                    <div className="absolute top-4 left-4 z-10">
+                      <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
+                        <Star className="w-3 h-3" /> Nổi bật
+                      </div>
+                    </div>
+                  )}
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute top-4 right-4">
+                      <span className="px-3 py-1 bg-white/90 dark:bg-gray/70 text-gray dark:text-white backdrop-blur-sm rounded-full text-xs font-semibold border border-white/20">
+                        {post.category}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{post.readTime}</span>
+                    <div className="absolute bottom-4 right-4 flex items-center gap-1 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Eye className="w-3 h-3" /> {post.views}
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => handleLike(post.id)}
-                      className={`flex items-center gap-1 text-sm transition-all duration-300 hover:scale-110 ${
-                        likedPosts.has(post.id)
-                          ? 'text-red-500'
-                          : 'text-gray-500 dark:text-gray-400 hover:text-red-500'
-                      }`}
-                    >
-                      <Heart
-                        className={`w-4 h-4 ${likedPosts.has(post.id) ? 'fill-current' : ''}`}
-                      />
-                      <span className="font-medium">
-                        {post.likes +
-                          (likedPosts.has(post.id) ? 1 : 0)}
-                      </span>
-                    </button>
-
-                    <button className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 transition-all duration-300 hover:scale-110">
-                      <Share2 className="w-4 h-4" />
-                      <span>Chia sẻ</span>
+                  <div className="p-6 space-y-4">
+                    <h2 className="text-xl font-bold line-clamp-2 text-gray dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors duration-300">
+                      {post.title}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300 line-clamp-2 text-sm leading-relaxed">
+                      {post.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          <span className="font-medium">{post.author}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{post.readTime}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={() => handleLike(post.id)}
+                          className={`flex items-center gap-1 text-sm transition-all duration-300 hover:scale-110 ${likedPosts.has(post.id) ? 'text-red-500' : 'text-gray-500 dark:text-gray-400 hover:text-red-500'}`}
+                        >
+                          <Heart
+                            className={`w-4 h-4 ${likedPosts.has(post.id) ? 'fill-current' : ''}`}
+                          />
+                          <span className="font-medium">
+                            {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
+                          </span>
+                        </button>
+                        <button className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 transition-all duration-300 hover:scale-110">
+                          <Share2 className="w-4 h-4" />
+                          <span>Chia sẻ</span>
+                        </button>
+                      </div>
+                      <span className="text-xs text-gray-400 dark:text-gray-500">{post.date}</span>
+                    </div>
+                    <button className="w-full mt-4 bg-pink-600 hover:bg-pink-700 dark:bg-pink-500 dark:hover:bg-pink-600 cursor-pointer text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
+                      Đọc tiếp{' '}
+                      <ChevronRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </button>
                   </div>
-
-                  <span className="text-xs text-gray-400 dark:text-gray-500">
-                    {post.date}
-                  </span>
-                </div>
-                <button className="w-full mt-4 bg-pink-600 hover:bg-pink-700 dark:bg-pink-500 dark:hover:bg-pink-600 cursor-pointer text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 shadow-md hover:shadow-lg group-hover:animate-pulse">
-                  Đọc tiếp
-                  <ChevronRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-        {filteredPosts.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-5xl mb-4">📝</div>
-            <h3 className="text-2xl font-bold mb-2 text-gray dark:text-white">
-              Không tìm thấy bài viết
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Thử chọn danh mục khác để xem thêm bài viết
-            </p>
+                </article>
+              </Zoom>
+            ))}
           </div>
+        </Fade>
+        {filteredPosts.length === 0 && (
+          <Fade in timeout={400}>
+            <div className="text-center py-16">
+              <div className="text-5xl mb-4">📝</div>
+              <h3 className="text-2xl font-bold mb-2 text-gray dark:text-white">
+                Không tìm thấy bài viết
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Thử chọn danh mục khác để xem thêm bài viết
+              </p>
+            </div>
+          </Fade>
         )}
       </section>
-      <section className="py-12 bg-gray-50 dark:bg-gray/50 rounded-2xl border border-gray-200 dark:border-gray/70">
+      <section className="py-12 bg-gray-50 dark:bg-gray/50 rounded-2xl border border-gray-200 dark:border-gray/70 mb-0">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-8 text-gray dark:text-white">
             Thống kê Fashion Blog
@@ -351,36 +343,26 @@ export default function BlogContent() {
               { label: 'Lượt đọc', value: '120K+', icon: '👀' },
               { label: 'Fashionista', value: '2.5K+', icon: '💃' },
               { label: 'Thương hiệu', value: '50+', icon: '✨' },
-            ].map((stat, index) => (
+            ].map((stat) => (
               <div
                 key={stat.label}
-                className={`text-center transform transition-all duration-500 hover:scale-110 ${
-                  isVisible
-                    ? 'translate-y-0 opacity-100'
-                    : 'translate-y-4 opacity-0'
-                }`}
-                style={{ transitionDelay: `${index * 0.1}s` }}
+                className="text-center hover:scale-110 transition-transform duration-300"
               >
                 <div className="text-3xl mb-2">{stat.icon}</div>
                 <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">
                   {stat.value}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {stat.label}
-                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
-      <section className="py-12 text-center">
+      <section className="py-8 text-center">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4 text-gray dark:text-white">
-            Đăng ký nhận tin
-          </h2>
+          <h2 className="text-3xl font-bold mb-4 text-gray dark:text-white">Đăng ký nhận tin</h2>
           <p className="text-gray/60 dark:text-gray/30 mb-8">
-            Nhận thông báo về những bài viết mới nhất và xu hướng công
-            nghệ hot nhất
+            Nhận thông báo về những bài viết mới nhất và xu hướng công nghệ hot nhất
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input

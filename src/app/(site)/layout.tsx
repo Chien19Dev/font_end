@@ -9,13 +9,7 @@ export const metadata: Metadata = {
     template: '%s - Elysia Wear',
   },
   description: APP_DESCRIPTION,
-  keywords: [
-    'elysia',
-    'thời trang nam nữ',
-    'áo quần hiện đại',
-    'elysia wear',
-    'quần áo đẹp',
-  ],
+  keywords: ['elysia', 'thời trang nam nữ', 'áo quần hiện đại', 'elysia wear', 'quần áo đẹp'],
   authors: [{ name: 'Elysia Team', url: 'https://elysiawear.vn' }],
   openGraph: {
     title: `Elysia Wear - ${APP_TITLE}`,
@@ -44,15 +38,9 @@ export const metadata: Metadata = {
         'https://n7media.coolmate.me/uploads/July2025/EXCOOL_-_Desktop-1.jpg',
     ],
   },
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 };
-export default function SiteLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <Fragment>
       <Navbar />

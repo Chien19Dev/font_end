@@ -19,7 +19,7 @@ import {
 import { MdMailOutline } from 'react-icons/md';
 
 const STORE_LINKS = [
-  { label: 'Tất cả sản phẩm', href: '/all-products' },
+  { label: 'Tất cả sản phẩm', href: '/products' },
   { label: 'Hàng mới về', href: '#' },
   { label: 'Bán chạy', href: '#' },
   { label: 'Bộ sưu tập', href: '#' },
@@ -96,9 +96,7 @@ function NewsletterForm({ onSubmit }: NewsletterFormProps) {
   };
   return (
     <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-6 border border-primary/20">
-      <h3 className="text-lg font-semibold text-white mb-2">
-        Đăng ký nhận tin
-      </h3>
+      <h3 className="text-lg font-semibold text-white mb-2">Đăng ký nhận tin</h3>
       <p className="text-sm text-gray-300 mb-4">
         Nhận thông tin về sản phẩm mới và ưu đãi đặc biệt
       </p>
@@ -152,9 +150,7 @@ export default function Footer() {
                     className="filter brightness-0 invert"
                   />
                 </div>
-                <span className="text-2xl font-bold text-white">
-                  Elysia Wear
-                </span>
+                <span className="text-2xl font-bold text-white">Elysia Wear</span>
               </Link>
               <div className="space-y-4 mb-8">
                 {[
@@ -180,9 +176,7 @@ export default function Footer() {
                     className="flex items-start gap-3 text-gray-300 group hover:text-white transition-colors duration-300"
                   >
                     <div className="mt-1">{item.icon}</div>
-                    <span className="text-sm leading-relaxed">
-                      {item.text}
-                    </span>
+                    <span className="text-sm leading-relaxed">{item.text}</span>
                   </div>
                 ))}
               </div>
@@ -201,10 +195,7 @@ export default function Footer() {
             <div className="lg:col-span-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <FooterColumn title="Cửa Hàng" links={STORE_LINKS} />
-                <FooterColumn
-                  title="Chính sách"
-                  links={POLICY_LINKS}
-                />
+                <FooterColumn title="Chính sách" links={POLICY_LINKS} />
                 <FooterColumn title="Hỗ Trợ" links={SUPPORT_LINKS} />
               </div>
             </div>
@@ -218,14 +209,11 @@ export default function Footer() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <span>
-                  &copy; 2025 Elysia Wear. Được thiết kế bởi team
-                  Elysia Wear tại Việt Nam
+                  &copy; 2025 Elysia Wear. Được thiết kế bởi team Elysia Wear tại Việt Nam
                 </span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-400 hidden sm:block">
-                  Thanh toán an toàn:
-                </span>
+                <span className="text-sm text-gray-400 hidden sm:block">Thanh toán an toàn:</span>
                 <div className="flex items-center gap-3">
                   {PAYMENT_ICONS.map((Icon, index) => (
                     <div

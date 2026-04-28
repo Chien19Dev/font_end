@@ -202,9 +202,10 @@ export default function NavLinks({ className = '' }: { className?: string }) {
   }, [clearCloseTimer]);
 
   const staticLinks = [
+    { name: 'Sản phẩm', href: '/products' },
+    { name: 'Blog', href: '/blog' },
     { name: 'Liên hệ', href: '/lien-he' },
     { name: 'Về chúng tôi', href: '/ve-chung-toi' },
-    { name: 'Blog', href: '/blog' },
   ];
   const activeCategory = categories.find((category) => category.id === activeCategoryId) || null;
   const activeCategoryHref = activeCategory ? `/${activeCategory.slug_category}` : '';

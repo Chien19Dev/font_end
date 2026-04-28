@@ -20,8 +20,7 @@ export default function BackToTop({
     const toggleVisibility = () => {
       const scrolled = document.documentElement.scrollTop;
       const maxHeight =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
+        document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const progress = (scrolled / maxHeight) * 100;
 
       setScrollProgress(progress);
@@ -29,8 +28,7 @@ export default function BackToTop({
     };
 
     window.addEventListener('scroll', toggleVisibility);
-    return () =>
-      window.removeEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
   }, [showAfter]);
 
   const scrollToTop = () => {
@@ -52,15 +50,9 @@ export default function BackToTop({
           isVisible
             ? 'translate-y-0 opacity-100 pointer-events-auto'
             : 'translate-y-16 opacity-0 pointer-events-none'
-        }
-          ${className}
-        `}
-        aria-label="Scroll to top"
+        } ${className}`}
       >
-        <svg
-          className="absolute inset-0 w-full h-full -rotate-90"
-          viewBox="0 0 36 36"
-        >
+        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
           <path
             d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
@@ -107,8 +99,7 @@ export function useScrollPosition() {
   useEffect(() => {
     const updateScrollPosition = () => {
       const currentScrollY = window.scrollY;
-      const maxScroll =
-        document.documentElement.scrollHeight - window.innerHeight;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = (currentScrollY / maxScroll) * 100;
 
       setScrollY(currentScrollY);
@@ -118,8 +109,7 @@ export function useScrollPosition() {
     window.addEventListener('scroll', updateScrollPosition);
     updateScrollPosition();
 
-    return () =>
-      window.removeEventListener('scroll', updateScrollPosition);
+    return () => window.removeEventListener('scroll', updateScrollPosition);
   }, []);
 
   return { scrollY, scrollProgress };
