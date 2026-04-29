@@ -4,11 +4,7 @@ import { Minus, Plus } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   Sidebar,
   SidebarContent,
@@ -45,6 +41,10 @@ const data = {
         {
           title: 'Tạo bài viết',
           url: '/admin/blog',
+        },
+        {
+          title: 'Danh sách bài viết',
+          url: '/admin/blog/list',
         },
       ],
     },
@@ -99,9 +99,7 @@ const data = {
   ],
 };
 
-export function AppSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   return (
@@ -112,15 +110,8 @@ export function AppSidebar({
             <SidebarMenuButton size="lg" asChild>
               <Link href="/" className="flex w-full">
                 <div className="flex flex-row items-center gap-5 leading-none">
-                  <Image
-                    src="/logo.svg"
-                    alt="Elysia Wear"
-                    width={35}
-                    height={35}
-                  />
-                  <div className="text-gray dark:text-white font-semibold text-lg">
-                    Elysia Wear
-                  </div>
+                  <Image src="/logo.svg" alt="Elysia Wear" width={35} height={35} />
+                  <div className="text-gray dark:text-white font-semibold text-lg">Elysia Wear</div>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -134,9 +125,7 @@ export function AppSidebar({
             {data.navMain.map((item, index) => (
               <Collapsible
                 key={item.title}
-                defaultOpen={item.items.some((sub) =>
-                  pathname.startsWith(sub.url),
-                )}
+                defaultOpen={item.items.some((sub) => pathname.startsWith(sub.url))}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
@@ -154,13 +143,9 @@ export function AppSidebar({
                           <SidebarMenuSubItem key={subItem.title}>
                             <SidebarMenuSubButton
                               asChild
-                              isActive={pathname.startsWith(
-                                subItem.url,
-                              )}
+                              isActive={pathname.startsWith(subItem.url)}
                             >
-                              <Link href={subItem.url}>
-                                {subItem.title}
-                              </Link>
+                              <Link href={subItem.url}>{subItem.title}</Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}

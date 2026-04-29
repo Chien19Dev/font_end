@@ -16,10 +16,7 @@ export default function SectionTop() {
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            background: `
-              radial-gradient(circle at 25% 25%, hsl(221, 83%, 53%) 0%, transparent 50%),
-              radial-gradient(circle at 75% 75%, hsl(280, 100%, 70%) 0%, transparent 50%)
-            `,
+            background: `radial-gradient(circle at 25% 25%, hsl(221, 83%, 53%) 0%, transparent 50%), radial-gradient(circle at 75% 75%, hsl(280, 100%, 70%) 0%, transparent 50%)`,
           }}
         />
         <div className="relative text-center flex flex-col items-center pt-3">

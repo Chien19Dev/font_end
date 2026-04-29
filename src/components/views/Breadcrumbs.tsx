@@ -21,10 +21,8 @@ const SPECIAL_LABELS: Record<string, string> = {
   'lien-he': 'Liên hệ',
   blog: 'Bài viết',
   'cham-soc-khach-hang': 'Chăm sóc khách hàng',
-  'chinh-sach-bao-mat-thong-tin-ca-nhan':
-    'Chính sách bảo mật thông tin cá nhân',
-  'chuong-trinh-va-chinh-sach-khuyen-mai':
-    'Chương trình và chính sách khuyến mãi',
+  'chinh-sach-bao-mat-thong-tin-ca-nhan': 'Chính sách bảo mật thông tin cá nhân',
+  'chuong-trinh-va-chinh-sach-khuyen-mai': 'Chương trình và chính sách khuyến mãi',
   'dich-vu-60-ngay-doi-tra': 'Dịch vụ đổi trả',
   'order-tracking': 'Theo dõi đơn hàng',
   profile: 'Thông tin cá nhân',
@@ -36,14 +34,13 @@ const SPECIAL_LABELS: Record<string, string> = {
   policy: 'Chính sách',
   category: 'Danh mục',
   lever: 'Level',
-  'create-category' : 'Tạo danh mục'
+  'create-category': 'Tạo danh mục',
+  list: 'Danh sách bài viết',
 };
 
 function formatSlug(slug: string) {
   if (SPECIAL_LABELS[slug]) return SPECIAL_LABELS[slug];
-  return (
-    slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ')
-  );
+  return slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
 }
 export default function Breadcrumbs() {
   const pathname = usePathname();
@@ -70,9 +67,7 @@ export default function Breadcrumbs() {
         const subcategorySlug = pathParts[1];
         let subcategoryName = '';
         if (category?.subcategories) {
-          const sub = category.subcategories.find(
-            (sc) => sc.slug === subcategorySlug,
-          );
+          const sub = category.subcategories.find((sc) => sc.slug === subcategorySlug);
           if (sub) {
             subcategoryName = sub.name;
           }
