@@ -11,6 +11,7 @@ import Discounts from '@/components/views/Discounts';
 import { EmptyPlaceholder } from '@/components/views/EmptyPlaceholder';
 import HomeBanner from '@/components/views/HomeBanner';
 import ProductCard from '@/components/views/ItemCard';
+import SectionCategories from '@/components/views/SectionCategories';
 import ModalFitterProduct from '@/model/modalFitterProduct';
 import { getProducts } from '@/services/productsApi';
 import { SortType } from '@/types/sort';
@@ -21,9 +22,7 @@ import { Fragment, useEffect, useState } from 'react';
 
 export default function HomePage() {
   const [products, setProducts] = useState<any[]>([]);
-  const [sortByCategory, setSortByCategory] = useState<
-    Record<string, SortType>
-  >({});
+  const [sortByCategory, setSortByCategory] = useState<Record<string, SortType>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,24 +38,16 @@ export default function HomePage() {
       });
   }, []);
 
-  const maleProducts = products.filter(
-    (p) => p.category?.category_type === 'nam',
-  );
-  const femaleProducts = products.filter(
-    (p) => p.category?.category_type === 'nu',
-  );
-  const accessories = products.filter(
-    (p) => p.category?.category_type === 'khac',
-  );
+  const maleProducts = products.filter((p) => p.category?.category_type === 'nam');
+  const femaleProducts = products.filter((p) => p.category?.category_type === 'nu');
+  const accessories = products.filter((p) => p.category?.category_type === 'khac');
   if (loading) {
     return (
       <div className="min-h-screen bg-background dark:bg-gray">
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-200 border-t-blue rounded-full animate-spin"></div>
-            <p className="text-slate-600 font-medium">
-              Đang tải sản phẩm...
-            </p>
+            <p className="text-slate-600 font-medium">Đang tải sản phẩm...</p>
           </div>
         </div>
       </div>
@@ -71,6 +62,9 @@ export default function HomePage() {
           <HomeBanner />
         </div>
         {/* <Discounts /> */}
+        <div className="mx-auto max-w-full px-4 sm:px-6 md:px-14 lg:px-10 xl:px-15 2xl:px-16 w-full h-full py-4">
+          <SectionCategories />
+        </div>
         <div className="py-5 lg:space-y-10">
           {maleProducts.length > 0 && (
             <Section
@@ -89,9 +83,7 @@ export default function HomePage() {
             <Section
               description={maleProducts[0]?.category?.description}
               title={femaleProducts[0]?.category?.name}
-              categorySlug={
-                femaleProducts[0]?.category?.slug_category
-              }
+              categorySlug={femaleProducts[0]?.category?.slug_category}
               products={femaleProducts}
               sortByCategory={sortByCategory}
               setSortByCategory={setSortByCategory}
@@ -133,9 +125,7 @@ function Section({
   categorySlug: string;
   products: any[];
   sortByCategory: Record<string, SortType>;
-  setSortByCategory: React.Dispatch<
-    React.SetStateAction<Record<string, SortType>>
-  >;
+  setSortByCategory: React.Dispatch<React.SetStateAction<Record<string, SortType>>>;
   gradient: string;
   icon: React.ReactNode;
 }) {
@@ -144,25 +134,13 @@ function Section({
   const sortedProducts = [...products].sort((a, b) => {
     switch (sort) {
       case 'newest':
-        return (
-          new Date(b.created_at).getTime() -
-          new Date(a.created_at).getTime()
-        );
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       case 'oldest':
-        return (
-          new Date(a.created_at).getTime() -
-          new Date(b.created_at).getTime()
-        );
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       case 'price_asc':
-        return (
-          (a.discounted_price ?? a.price) -
-          (b.discounted_price ?? b.price)
-        );
+        return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
       case 'price_desc':
-        return (
-          (b.discounted_price ?? b.price) -
-          (a.discounted_price ?? a.price)
-        );
+        return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
       case 'name_asc':
         return a.name.localeCompare(b.name);
       case 'name_desc':
@@ -207,9 +185,7 @@ function Section({
       </div>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div className="flex items-center gap-4">
-          <div
-            className={`p-3 bg-gradient-to-r ${gradient} text-white rounded-xl shadow-lg`}
-          >
+          <div className={`p-3 bg-gradient-to-r ${gradient} text-white rounded-xl shadow-lg`}>
             {icon}
           </div>
           <div>
@@ -244,28 +220,17 @@ function Section({
           <Carousel className="w-full">
             <CarouselContent className="-ml-2 md:-ml-4">
               {sortedProducts.map((product, index) => (
-                <CarouselItem
-                  key={product.id}
-                  className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/4"
-                >
+                <CarouselItem key={product.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/4">
                   <div className="group relative">
                     <div className="relative shadow-none group-hover:shadow transition-all duration-300 overflow-hidden border-none">
                       <ProductCard
                         id={product.id}
                         categorySlug={product.category.slug_category}
-                        subcategorySlug={
-                          product.subcategory?.slug ?? ''
-                        }
+                        subcategorySlug={product.subcategory?.slug ?? ''}
                         name={product.name}
                         description={product.description}
-                        price={
-                          product.discounted_price ?? product.price
-                        }
-                        oldPrice={
-                          product.discounted_price
-                            ? product.price
-                            : undefined
-                        }
+                        price={product.discounted_price ?? product.price}
+                        oldPrice={product.discounted_price ? product.price : undefined}
                         discountPercent={product.discount_percentage}
                         image_url={product.image_url}
                         image_hover_url={product.image_hover_url}

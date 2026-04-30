@@ -19,21 +19,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
-import {
-  Bell,
-  Check,
-  Clock,
-  Package,
-  UserPlus,
-  X,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Bell, Check, Clock, Package, UserPlus, X } from 'lucide-react';
+import { Fragment, useEffect, useState } from 'react';
 
 type Notification = {
   id: string;
@@ -45,13 +33,7 @@ type Notification = {
   type: 'order' | 'user' | 'system';
 };
 
-const NotificationIcon = ({
-  type,
-  className,
-}: {
-  type: string;
-  className?: string;
-}) => {
+const NotificationIcon = ({ type, className }: { type: string; className?: string }) => {
   switch (type) {
     case 'order':
       return <Package className={className} size={16} />;
@@ -114,10 +96,10 @@ export default function NotificationDropdown() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [clearAllDialogOpen, setClearAllDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
-  const [selectedNotification, setSelectedNotification] =
-    useState<Notification | null>(null);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [bellAnimation, setBellAnimation] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (unreadCount > 0) {
@@ -131,9 +113,7 @@ export default function NotificationDropdown() {
 
   const handleViewNotification = (notification: Notification) => {
     setNotifications((prev) =>
-      prev.map((n) =>
-        n.id === notification.id ? { ...n, unread: false } : n,
-      ),
+      prev.map((n) => (n.id === notification.id ? { ...n, unread: false } : n)),
     );
     setSelectedNotification(notification);
     setViewDialogOpen(true);
@@ -141,9 +121,7 @@ export default function NotificationDropdown() {
 
   const handleDeleteNotification = () => {
     if (selectedNotification) {
-      setNotifications((prev) =>
-        prev.filter((n) => n.id !== selectedNotification.id),
-      );
+      setNotifications((prev) => prev.filter((n) => n.id !== selectedNotification.id));
       setSelectedNotification(null);
     }
     setDeleteDialogOpen(false);
@@ -156,16 +134,15 @@ export default function NotificationDropdown() {
   };
 
   const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((n) => ({ ...n, unread: false })),
-    );
+    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
   };
 
   const unreadCount = notifications.filter((n) => n.unread).length;
   const readNotifications = notifications.filter((n) => !n.unread);
   const unreadNotifications = notifications.filter((n) => n.unread);
+
   return (
-    <div>
+    <Fragment>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -186,8 +163,7 @@ export default function NotificationDropdown() {
               <span
                 className="absolute -top-2 -right-2 h-6 w-6 flex text-primary-foreground items-center justify-center rounded-full text-xs font-bold shadow-lg animate-pulse border-2 border-white"
                 style={{
-                  background:
-                    'linear-gradient(135deg, var(--primary) 0%, var(--ring) 100%)',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--ring) 100%)',
                 }}
               >
                 {unreadCount > 9 ? '9+' : unreadCount}
@@ -196,10 +172,9 @@ export default function NotificationDropdown() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="-right-50 absolute max-w-[510px]"
+          className="w-[400px] min-w-[400px] max-w-[400px]"
           style={{
-            background:
-              'linear-gradient(135deg, var(--popover) 0%, var(--secondary) 100%)',
+            background: 'linear-gradient(135deg, var(--popover) 0%, var(--secondary) 100%)',
           }}
         >
           <DropdownMenuLabel className="text-lg font-bold flex items-center justify-between px-6 py-4 border-b border-[var(--border)] gap-2">
@@ -275,16 +250,14 @@ export default function NotificationDropdown() {
                 <TabsContent
                   key={tab}
                   value={tab}
-                  className="max-h-[500px] overflow-y-auto  px-4 py-4 space-y-2"
+                  className="max-h-[500px] overflow-y-auto px-4 py-4 space-y-2"
                 >
                   {items.length > 0 ? (
                     <DropdownMenuGroup className="space-y-2">
                       {items.map((notification, index) => (
                         <DropdownMenuItem
                           key={notification.id}
-                          onClick={() =>
-                            handleViewNotification(notification)
-                          }
+                          onClick={() => handleViewNotification(notification)}
                           className={`flex items-start gap-4 px-4 py-4 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg border border-transparent ${
                             notification.unread
                               ? 'border-[var(--primary)]/20 shadow-md'
@@ -300,24 +273,17 @@ export default function NotificationDropdown() {
                           <div
                             className="flex-shrink-0 mt-1 p-2 rounded-xl transition-all duration-300"
                             style={{
-                              background: notification.unread
-                                ? 'var(--primary)'
-                                : 'var(--muted)',
+                              background: notification.unread ? 'var(--primary)' : 'var(--muted)',
                               color: notification.unread
                                 ? 'var(--primary-foreground)'
                                 : 'var(--muted-foreground)',
                             }}
                           >
-                            <NotificationIcon
-                              type={notification.type}
-                            />
+                            <NotificationIcon type={notification.type} />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm leading-relaxed">
-                              <span
-                                className="font-bold"
-                                style={{ color: 'var(--foreground)' }}
-                              >
+                              <span className="font-bold" style={{ color: 'var(--foreground)' }}>
                                 {notification.user}
                               </span>{' '}
                               <span
@@ -327,10 +293,7 @@ export default function NotificationDropdown() {
                               >
                                 {notification.action}
                               </span>{' '}
-                              <span
-                                className="font-semibold"
-                                style={{ color: 'var(--primary)' }}
-                              >
+                              <span className="font-semibold" style={{ color: 'var(--primary)' }}>
                                 {notification.target}
                               </span>
                             </p>
@@ -358,8 +321,7 @@ export default function NotificationDropdown() {
                                   className="px-2 py-0.5 rounded-full text-xs font-medium"
                                   style={{
                                     background: 'var(--secondary)',
-                                    color:
-                                      'var(--secondary-foreground)',
+                                    color: 'var(--secondary-foreground)',
                                   }}
                                 >
                                   User
@@ -386,10 +348,7 @@ export default function NotificationDropdown() {
                         className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                         style={{ background: 'var(--muted)' }}
                       >
-                        <Bell
-                          size={24}
-                          style={{ color: 'var(--muted-foreground)' }}
-                        />
+                        <Bell size={24} style={{ color: 'var(--muted-foreground)' }} />
                       </div>
                       <p
                         className="text-sm font-medium"
@@ -397,10 +356,7 @@ export default function NotificationDropdown() {
                       >
                         No {tab} notifications
                       </p>
-                      <p
-                        className="text-xs mt-1"
-                        style={{ color: 'var(--muted-foreground)' }}
-                      >
+                      <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
                         You're all caught up!
                       </p>
                     </div>
@@ -411,15 +367,13 @@ export default function NotificationDropdown() {
           </Tabs>
         </DropdownMenuContent>
       </DropdownMenu>
-      <AlertDialog
-        open={viewDialogOpen}
-        onOpenChange={setViewDialogOpen}
-      >
+
+      {/* View Dialog */}
+      <AlertDialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
         <AlertDialogContent
           className="max-w-lg rounded-3xl border-2 backdrop-blur-xl"
           style={{
-            background:
-              'linear-gradient(135deg, var(--popover) 0%, var(--secondary) 100%)',
+            background: 'linear-gradient(135deg, var(--popover) 0%, var(--secondary) 100%)',
             borderColor: 'var(--border)',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           }}
@@ -433,37 +387,23 @@ export default function NotificationDropdown() {
                   color: 'var(--primary-foreground)',
                 }}
               >
-                <NotificationIcon
-                  type={selectedNotification?.type || ''}
-                  className="w-5 h-5"
-                />
+                <NotificationIcon type={selectedNotification?.type || ''} className="w-5 h-5" />
               </div>
-              <span style={{ color: 'var(--foreground)' }}>
-                Notification Detail
-              </span>
+              <span style={{ color: 'var(--foreground)' }}>Notification Detail</span>
             </AlertDialogTitle>
             <AlertDialogDescription
               className="text-base leading-relaxed pl-16"
               style={{ color: 'var(--muted-foreground)' }}
             >
-              <div
-                className="p-4 rounded-2xl mb-4"
-                style={{ background: 'var(--accent)' }}
-              >
+              <div className="p-4 rounded-2xl mb-4" style={{ background: 'var(--accent)' }}>
                 <p className="text-lg">
-                  <span
-                    className="font-bold"
-                    style={{ color: 'var(--foreground)' }}
-                  >
+                  <span className="font-bold" style={{ color: 'var(--foreground)' }}>
                     {selectedNotification?.user}
                   </span>{' '}
                   <span style={{ color: 'var(--muted-foreground)' }}>
                     {selectedNotification?.action}
                   </span>{' '}
-                  <span
-                    className="font-semibold"
-                    style={{ color: 'var(--primary)' }}
-                  >
+                  <span className="font-semibold" style={{ color: 'var(--primary)' }}>
                     {selectedNotification?.target}
                   </span>
                 </p>
@@ -492,8 +432,7 @@ export default function NotificationDropdown() {
               onClick={() => setDeleteDialogOpen(true)}
               className="rounded-2xl transition-all duration-200 hover:scale-105 shadow-lg"
               style={{
-                background:
-                  'linear-gradient(135deg, var(--destructive) 0%, #dc2626 100%)',
+                background: 'linear-gradient(135deg, var(--destructive) 0%, #dc2626 100%)',
                 color: 'var(--destructive-foreground)',
               }}
             >
@@ -502,10 +441,9 @@ export default function NotificationDropdown() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <AlertDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-      >
+
+      {/* Delete Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent
           className="rounded-3xl border-2"
           style={{
@@ -514,18 +452,14 @@ export default function NotificationDropdown() {
           }}
         >
           <AlertDialogHeader>
-            <AlertDialogTitle
-              className="text-xl"
-              style={{ color: 'var(--foreground)' }}
-            >
+            <AlertDialogTitle className="text-xl" style={{ color: 'var(--foreground)' }}>
               Delete notification
             </AlertDialogTitle>
             <AlertDialogDescription
               className="text-base leading-relaxed"
               style={{ color: 'var(--muted-foreground)' }}
             >
-              Are you sure you want to delete this notification? This
-              action cannot be undone.
+              Are you sure you want to delete this notification? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-3">
@@ -551,10 +485,7 @@ export default function NotificationDropdown() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <AlertDialog
-        open={clearAllDialogOpen}
-        onOpenChange={setClearAllDialogOpen}
-      >
+      <AlertDialog open={clearAllDialogOpen} onOpenChange={setClearAllDialogOpen}>
         <AlertDialogContent
           className="rounded-3xl border-2"
           style={{
@@ -563,18 +494,14 @@ export default function NotificationDropdown() {
           }}
         >
           <AlertDialogHeader>
-            <AlertDialogTitle
-              className="text-xl"
-              style={{ color: 'var(--foreground)' }}
-            >
+            <AlertDialogTitle className="text-xl" style={{ color: 'var(--foreground)' }}>
               Clear all notifications
             </AlertDialogTitle>
             <AlertDialogDescription
               className="text-base leading-relaxed"
               style={{ color: 'var(--muted-foreground)' }}
             >
-              This will remove all notifications. Are you sure you
-              want to continue?
+              This will remove all notifications. Are you sure you want to continue?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-3">
@@ -600,6 +527,6 @@ export default function NotificationDropdown() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </Fragment>
   );
 }

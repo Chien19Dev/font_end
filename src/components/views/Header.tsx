@@ -39,8 +39,7 @@ export default function Navbar() {
     window.addEventListener('scroll', throttledHandleScroll, {
       passive: true,
     });
-    return () =>
-      window.removeEventListener('scroll', throttledHandleScroll);
+    return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [handleScroll]);
 
   useEffect(() => {
@@ -54,10 +53,7 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const topBarOpacity = Math.max(
-    0,
-    Math.min(1, (100 - scrollY) / 100),
-  );
+  const topBarOpacity = Math.max(0, Math.min(1, (100 - scrollY) / 100));
   const topBarTransform = `translateY(${Math.min(0, scrollY * -0.5)}px)`;
   return (
     <Fragment>
@@ -109,12 +105,7 @@ export default function Navbar() {
                   className="flex h-full items-center gap-1 px-2 py-2 text-xs font-medium text-background transition hover:bg-sidebar-foreground hover:text-background/90 mr-2"
                   aria-label={item.label}
                 >
-                  {item.icon && (
-                    <item.icon
-                      className="h-4 w-4"
-                      aria-hidden="true"
-                    />
-                  )}
+                  {item.icon && <item.icon className="h-4 w-4" aria-hidden="true" />}
                   {item.label}
                 </Link>
                 {idx !== mainMenu.length - 1 && (
@@ -171,10 +162,10 @@ export default function Navbar() {
 
             <div className="hidden lg:flex items-center gap-3 lg:gap-6">
               <UserMenu />
-              <Notifications />
               <Link href="/cart" aria-label="View shopping cart">
                 <CartButton />
               </Link>
+              <Notifications />
               <ModeToggle />
             </div>
 
@@ -191,11 +182,7 @@ export default function Navbar() {
                   aria-expanded={menuOpen}
                   aria-controls="mobile-menu-panel"
                 >
-                  {menuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
+                  {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 </button>
                 <Link
                   href="/"
@@ -238,15 +225,9 @@ export default function Navbar() {
           </div>
           <div
             className={`hidden lg:flex justify-start sm:justify-center transition-all
-            duration-500 ${
-              isSticky ? 'py-1.5' : 'py-2.5'
-            }`}
+            duration-500 ${isSticky ? 'py-1.5' : 'py-2.5'}`}
           >
-            <NavLinks
-              className={`${
-                isSticky ? 'text-sm' : 'text-base'
-              } flex space-x-4`}
-            />
+            <NavLinks className={`${isSticky ? 'text-sm' : 'text-base'} flex space-x-4`} />
           </div>
         </div>
         {mobileSearchOpen && (
@@ -268,9 +249,7 @@ export default function Navbar() {
               </div>
 
               <div className="mb-3 flex items-center justify-between rounded-xl border border-border/50 bg-background/70 px-3 py-2">
-                <p className="text-sm font-semibold text-foreground">
-                  Tài khoản & thông báo
-                </p>
+                <p className="text-sm font-semibold text-foreground">Tài khoản & thông báo</p>
                 <div className="flex items-center gap-3">
                   <UserMenu />
                   <Notifications />
@@ -278,20 +257,14 @@ export default function Navbar() {
               </div>
 
               <div className="mb-3 rounded-xl border border-border/50 bg-background/70 p-3">
-                <p className="mb-2 text-sm font-semibold text-foreground">
-                  Danh mục nổi bật
-                </p>
+                <p className="mb-2 text-sm font-semibold text-foreground">Danh mục nổi bật</p>
                 <div className="overflow-hidden pb-1">
-                  <NavLinks
-                    className="w-full [&_ul]:!grid [&_ul]:grid-cols-2 [&_ul]:gap-2 [&_ul]:!items-stretch [&_ul]:!justify-start [&_li]:!pb-0 [&_a]:!w-full [&_a]:!rounded-lg lg:[&_a]:!border lg:[&_a]:!border-border/40 [&_a]:!bg-card/80 [&_a]:!px-3 [&_a]:!py-2 [&_a]:!text-center [&_a]:!text-xs sm:[&_a]:!text-sm [&_li>div]:hidden"
-                  />
+                  <NavLinks className="w-full [&_ul]:!grid [&_ul]:grid-cols-2 [&_ul]:gap-2 [&_ul]:!items-stretch [&_ul]:!justify-start [&_li]:!pb-0 [&_a]:!w-full [&_a]:!rounded-lg lg:[&_a]:!border lg:[&_a]:!border-border/40 [&_a]:!bg-card/80 [&_a]:!px-3 [&_a]:!py-2 [&_a]:!text-center [&_a]:!text-xs sm:[&_a]:!text-sm [&_li>div]:hidden" />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-2 rounded-xl border border-border/50 bg-background/70 p-3">
-                <p className="mb-1 text-sm font-semibold text-foreground">
-                  Tiện ích nhanh
-                </p>
+                <p className="mb-1 text-sm font-semibold text-foreground">Tiện ích nhanh</p>
                 {topMenu.map((item, idx) => (
                   <Link
                     key={`mobile-top-${item.href}-${idx}`}

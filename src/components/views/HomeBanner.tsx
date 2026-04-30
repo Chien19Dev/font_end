@@ -20,9 +20,7 @@ interface HomeBannerProps {
   className?: string;
 }
 
-export default function HomeBanner({
-  className = '',
-}: HomeBannerProps) {
+export default function HomeBanner({ className = '' }: HomeBannerProps) {
   const [banners, setBanners] = useState<BannerFormData[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setCurrentIndex] = useState(0);
@@ -46,15 +44,9 @@ export default function HomeBanner({
     fetchBanners();
   }, []);
   useEffect(() => {
-    if (
-      isPlaying &&
-      banners.length > 0 &&
-      banners[0]?.image_url?.length > 1
-    ) {
+    if (isPlaying && banners.length > 0 && banners[0]?.image_url?.length > 1) {
       intervalRef.current = setInterval(() => {
-        setCurrentIndex((prev) =>
-          prev >= banners[0]?.image_url?.length - 1 ? 0 : prev + 1,
-        );
+        setCurrentIndex((prev) => (prev >= banners[0]?.image_url?.length - 1 ? 0 : prev + 1));
       }, 5000);
     }
 
@@ -79,9 +71,7 @@ export default function HomeBanner({
 
   if (loading) {
     return (
-      <div
-        className={`relative bg-gradient-to-br from-background to-muted/30 ${className}`}
-      >
+      <div className={`relative bg-gradient-to-br from-background to-muted/30 ${className}`}>
         <div className="aspect-[3/1] md:aspect-[16/5] flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -89,9 +79,7 @@ export default function HomeBanner({
             className="flex flex-col items-center gap-4"
           >
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground font-medium">
-              Đang tải banner...
-            </p>
+            <p className="text-muted-foreground font-medium">Đang tải banner...</p>
           </motion.div>
         </div>
       </div>
@@ -100,9 +88,7 @@ export default function HomeBanner({
 
   if (banners.length === 0) {
     return (
-      <div
-        className={`relative bg-gradient-to-br from-background to-muted/30 ${className}`}
-      >
+      <div className={`relative bg-gradient-to-br from-background to-muted/30 ${className}`}>
         <div className="aspect-[3/1] md:aspect-[16/5] flex items-center justify-center">
           <EmptyPlaceholder description="Không có banner." />
         </div>
@@ -111,8 +97,7 @@ export default function HomeBanner({
   }
 
   const banner = banners[0];
-  const hasMultipleImages =
-    banner.image_url && banner.image_url.length > 1;
+  const hasMultipleImages = banner.image_url && banner.image_url.length > 1;
 
   return (
     <motion.div
@@ -141,10 +126,7 @@ export default function HomeBanner({
       >
         <CarouselContent>
           {banner.image_url.map((src, index) => (
-            <CarouselItem
-              key={index}
-              className="aspect-[3/1] md:aspect-[16/5] pl-0 relative"
-            >
+            <CarouselItem key={index} className="aspect-[3/1] md:aspect-[16/5] pl-0 relative">
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

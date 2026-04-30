@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import ProductImageCarousel from './components/ProductImageCarousel';
 import ProductTabs from './components/ProductTabs';
 import ProductVariantSelector from './components/ProductVariantSelector';
+import ProductShare from './components/ProducShare';
 
 export async function generateMetadata({
   params,
@@ -17,9 +18,7 @@ export async function generateMetadata({
   try {
     const product = await getProductDetail(resolvedParams.id);
     const firstImage =
-      Array.isArray(product.image_url) && product.image_url.length > 0
-        ? product.image_url[0]
-        : '';
+      Array.isArray(product.image_url) && product.image_url.length > 0 ? product.image_url[0] : '';
     return {
       title: product.name,
       description: product.description,
@@ -76,9 +75,7 @@ export default async function ProductDetailPage({
               <div className="sticky top-4">
                 <ProductImageCarousel
                   images={
-                    Array.isArray(product.image_url)
-                      ? product.image_url
-                      : [product.image_url]
+                    Array.isArray(product.image_url) ? product.image_url : [product.image_url]
                   }
                   alt={product.name}
                 />
@@ -95,22 +92,21 @@ export default async function ProductDetailPage({
                       <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 transition-colors" />
                     </button>
                   </div>
+                  <div className="flex gap-4 border-b border-neutral-200 py-2 lg:mt-3 lg:pb-3 lg:pt-0">
+                    <ProductShare />
+                  </div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
                           className={`w-4 h-4 ${
-                            i < 4
-                              ? 'text-yellow-400 fill-yellow-400'
-                              : 'text-muted-foreground'
+                            i < 4 ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'
                           }`}
                         />
                       ))}
                     </div>
-                    <span className="text-sm text-muted-foreground">
-                      4.0 (128 đánh giá)
-                    </span>
+                    <span className="text-sm text-muted-foreground">4.0 (128 đánh giá)</span>
                   </div>
                 </div>
                 <div className="mb-8">
@@ -136,17 +132,8 @@ export default async function ProductDetailPage({
                         Tiết kiệm được{' '}
                         <span className="font-semibold text-primary">
                           {(
-                            parseFloat(
-                              String(product.price).replace(
-                                /[^\d]/g,
-                                '',
-                              ),
-                            ) -
-                            parseFloat(
-                              String(
-                                product.discounted_price,
-                              ).replace(/[^\d]/g, ''),
-                            )
+                            parseFloat(String(product.price).replace(/[^\d]/g, '')) -
+                            parseFloat(String(product.discounted_price).replace(/[^\d]/g, ''))
                           ).toLocaleString()}
                           đ
                         </span>
@@ -164,33 +151,24 @@ export default async function ProductDetailPage({
                       color: v.color,
                       size: v.size,
                       quantity: v.quantity,
-                      price: String(
-                        product.discounted_price ?? product.price,
-                      ),
+                      price: String(product.discounted_price ?? product.price),
                       image:
-                        Array.isArray(product.image_url) &&
-                        product.image_url.length > 0
+                        Array.isArray(product.image_url) && product.image_url.length > 0
                           ? product.image_url[0]
                           : '',
                     }))}
                   />
                 </div>
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    Ưu đãi đặc biệt
-                  </h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Ưu đãi đặc biệt</h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
                       <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
                         <Truck className="w-4 h-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm">
-                          Miễn phí vận chuyển
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Đơn hàng từ 500.000đ
-                        </p>
+                        <p className="font-medium text-foreground text-sm">Miễn phí vận chuyển</p>
+                        <p className="text-xs text-muted-foreground">Đơn hàng từ 500.000đ</p>
                       </div>
                     </div>
 
@@ -199,12 +177,8 @@ export default async function ProductDetailPage({
                         <RotateCcw className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm">
-                          Đổi trả dễ dàng
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Trong vòng 30 ngày
-                        </p>
+                        <p className="font-medium text-foreground text-sm">Đổi trả dễ dàng</p>
+                        <p className="text-xs text-muted-foreground">Trong vòng 30 ngày</p>
                       </div>
                     </div>
 
@@ -213,12 +187,8 @@ export default async function ProductDetailPage({
                         <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm">
-                          Bảo hành chính hãng
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          12 tháng từ nhà sản xuất
-                        </p>
+                        <p className="font-medium text-foreground text-sm">Bảo hành chính hãng</p>
+                        <p className="text-xs text-muted-foreground">12 tháng từ nhà sản xuất</p>
                       </div>
                     </div>
                   </div>

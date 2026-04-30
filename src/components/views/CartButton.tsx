@@ -2,12 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useCart } from '@/contexts/CartContext';
 import { motion, useAnimation } from 'framer-motion';
 import { useEffect } from 'react';
@@ -15,10 +10,7 @@ import { BsCart3 } from 'react-icons/bs';
 
 export default function CartButton() {
   const { cartItems } = useCart();
-  const totalCount = cartItems.reduce(
-    (sum, item) => sum + item.quantity,
-    0,
-  );
+  const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const controls = useAnimation();
   const badgeControls = useAnimation();
@@ -64,13 +56,9 @@ export default function CartButton() {
                   <div className="absolute inset-0 rounded-full bg-primary/20 blur-sm scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
                 {totalCount > 0 && (
-                  <motion.div
-                    animate={badgeControls}
-                    initial={{ scale: 0, opacity: 0 }}
-                    className="absolute -top-1 -right-1"
-                  >
+                  <motion.div animate={badgeControls} className="absolute -top-1 -right-1">
                     <Badge
-                      className="min-w-[22px] h-[22px] p-0 flex items-center justify-center bg-primary text-primary-foreground border-2 border-background text-[11px] font-bold rounded-full shadow-lg shadow-primary/25 animate-pulse"
+                      className="min-w-[22px] h-[22px] p-0 flex items-center justify-center bg-primary text-primary-foreground border-2 border-background text-[11px] font-bold rounded-full shadow-lg shadow-primary/25"
                       variant="default"
                     >
                       <motion.span
@@ -95,11 +83,7 @@ export default function CartButton() {
         </TooltipTrigger>
 
         <TooltipContent className="bg-primary text-background flex items-center justify-center text-center border-primary font-medium">
-          <p>
-            {totalCount === 0
-              ? 'Giỏ hàng trống'
-              : `${totalCount} sản phẩm trong giỏ`}
-          </p>
+          <p>{totalCount === 0 ? 'Giỏ hàng trống' : `${totalCount} sản phẩm trong giỏ`}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
