@@ -1,9 +1,6 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-export async function uploadImage(
-  file: File,
-): Promise<string | null> {
+export async function uploadImage(file: File): Promise<string | null> {
   try {
     const formData = new FormData();
     formData.append('image', file);

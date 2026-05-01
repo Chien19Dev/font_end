@@ -161,6 +161,26 @@ function CopyField({ label, value }: { label: string; value: string }) {
 function ReferralModal({ onClose }: { onClose: () => void }) {
   const overlayRef = useRef<HTMLDivElement>(null);
 
+  const handleShare = async () => {
+    const currentUrl = window.location.href;
+    const shareLink = `${currentUrl}${
+      currentUrl.includes('?') ? '&' : '?'
+    }refer-friend=${REFERRAL_CODE}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: document.title,
+          text: 'Mua hàng cùng mình nhé!',
+          url: shareLink,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareLink);
+        alert(`Đã copy link:\n${shareLink}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -290,6 +310,7 @@ function ReferralModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         <button
+          onClick={handleShare}
           className="share-cta-btn"
           style={{
             width: '100%',

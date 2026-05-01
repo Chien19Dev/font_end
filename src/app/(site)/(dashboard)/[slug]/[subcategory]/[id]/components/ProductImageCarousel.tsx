@@ -1,12 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  ZoomIn,
-} from 'lucide-react';
+import { showError, showSuccess } from '@/lib/swal';
+import { addFavorite, checkFavorite, removeFavorite } from '@/services/favoritesApi';
+import { ChevronLeft, ChevronRight, Heart, ZoomIn } from 'lucide-react';
 import Image from 'next/image';
 import * as React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -15,16 +12,46 @@ import { Swiper as SwiperClass } from 'swiper/types';
 interface ProductImageCarouselProps {
   images: string[];
   alt: string;
+  productId: string;
 }
 
 export default function ProductImageCarousel({
   images,
   alt,
+  productId,
 }: ProductImageCarouselProps) {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [isZoomed, setIsZoomed] = React.useState(false);
   const [isLiked, setIsLiked] = React.useState(false);
   const swiperRef = React.useRef<SwiperClass | null>(null);
+  React.useEffect(() => {
+    if (!productId) return;
+    const fetchFavorite = async () => {
+      try {
+        const res = await checkFavorite(productId);
+        setIsLiked(res.data.isFavorite);
+      } catch {
+        setIsLiked(false);
+      }
+    };
+
+    fetchFavorite();
+  }, [productId]);
+  const handleFavorite = async () => {
+    try {
+      if (!isLiked) {
+        const res = await addFavorite(productId);
+        setIsLiked(true);
+        showSuccess(res.message || 'Đã thêm yêu thích');
+      } else {
+        const res = await removeFavorite(productId);
+        setIsLiked(false);
+        showSuccess(res.message || 'Đã xóa yêu thích');
+      }
+    } catch {
+      showError('Thao tác thất bại!');
+    }
+  };
 
   const handleThumbnailClick = (index: number) => {
     setSelectedIndex(index);
@@ -35,9 +62,7 @@ export default function ProductImageCarousel({
   };
 
   const prevImage = () => {
-    setSelectedIndex(
-      (prev) => (prev - 1 + images.length) % images.length,
-    );
+    setSelectedIndex((prev) => (prev - 1 + images.length) % images.length);
   };
   React.useEffect(() => {
     swiperRef.current?.slideTo(selectedIndex);
@@ -45,6 +70,7 @@ export default function ProductImageCarousel({
 
   return (
     <div className="flex gap-4 px-4">
+      {' '}
       <div className="w-32">
         <Swiper
           direction="vertical"
@@ -120,7 +146,7 @@ export default function ProductImageCarousel({
             <Button
               variant="secondary"
               size="icon"
-              onClick={() => setIsLiked(!isLiked)}
+              onClick={handleFavorite}
               className="bg-card/95 backdrop-blur-sm hover:bg-card shadow-none border border-border opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
             >
               <Heart
@@ -156,9 +182,8 @@ export default function ProductImageCarousel({
           </div>
         </div>
         <div className="mt-4 text-center">
-          <h3 className="text-lg font-medium text-foreground">
-            {alt}
-          </h3>
+          <h3 className="text-lg font-medium text-foreground">{alt}</h3>
+
           <p className="text-sm text-muted-foreground mt-1">
             Ảnh {selectedIndex + 1} trong {images.length} ảnh
           </p>

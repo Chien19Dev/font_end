@@ -1,6 +1,6 @@
 import Breadcrumbs from '@/components/views/Breadcrumbs';
 import { getProductDetail } from '@/services/productsApi';
-import { Heart, RotateCcw, Shield, Star, Truck } from 'lucide-react';
+import { RotateCcw, Shield, Star, Truck } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProductImageCarousel from './components/ProductImageCarousel';
@@ -78,6 +78,7 @@ export default async function ProductDetailPage({
                     Array.isArray(product.image_url) ? product.image_url : [product.image_url]
                   }
                   alt={product.name}
+                  productId={product.id}
                 />
               </div>
             </div>
@@ -88,9 +89,6 @@ export default async function ProductDetailPage({
                     <h1 className="text-2xl lg:text-3xl font-bold text-foreground leading-tight">
                       {product.name}
                     </h1>
-                    <button className="p-2 rounded-full bg-muted/50 hover:bg-muted transition-colors">
-                      <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 transition-colors" />
-                    </button>
                   </div>
                   <div className="flex gap-4 border-b border-neutral-200 py-2 lg:mt-3 lg:pb-3 lg:pt-0">
                     <ProductShare />

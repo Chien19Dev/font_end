@@ -1,5 +1,4 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 export interface CartItem {
   id: string;
   variant_id: string;
@@ -18,10 +17,7 @@ export interface CartItem {
   };
 }
 
-export async function addToCart(
-  variant_id: string,
-  quantity: number = 1,
-) {
+export async function addToCart(variant_id: string, quantity: number = 1) {
   const res = await fetch(`${BASE_URL}/cart/add`, {
     method: 'POST',
     headers: {

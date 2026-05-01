@@ -1,5 +1,4 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export interface Subcategory {
   id: string;
@@ -47,25 +46,17 @@ export async function getAllCategories(): Promise<Category[]> {
   return normalizeCategoriesResponse(payload);
 }
 
-export async function getCategoryBySlug(
-  slug: string,
-): Promise<Category | null> {
-  const res = await fetch(
-    `${BASE_URL}/categories?slug_category=${slug}`,
-    {
-      cache: 'no-store',
-    },
-  );
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  const res = await fetch(`${BASE_URL}/categories?slug_category=${slug}`, {
+    cache: 'no-store',
+  });
   if (!res.ok) return null;
   const payload: unknown = await res.json();
   const data = normalizeCategoriesResponse(payload);
   return data.length > 0 ? data[0] : null;
 }
 
-export async function updateCategory(
-  id: string,
-  data: Partial<Category>,
-): Promise<Category> {
+export async function updateCategory(id: string, data: Partial<Category>): Promise<Category> {
   const res = await fetch(`${BASE_URL}/categories/${id}`, {
     method: 'PUT',
     headers: {
@@ -79,10 +70,7 @@ export async function updateCategory(
 }
 
 export async function createCategory(
-  data: Pick<
-    Category,
-    'name' | 'slug_category' | 'category_type' | 'image' | 'description'
-  >,
+  data: Pick<Category, 'name' | 'slug_category' | 'category_type' | 'image' | 'description'>,
 ): Promise<Category> {
   const res = await fetch(`${BASE_URL}/categories`, {
     method: 'POST',
@@ -103,8 +91,6 @@ export async function getSubcategoryBySlug(
   const category = await getCategoryBySlug(categorySlug);
   if (!category?.subcategories) return null;
 
-  const found = category.subcategories.find(
-    (sub) => sub.slug === subcategorySlug,
-  );
+  const found = category.subcategories.find((sub) => sub.slug === subcategorySlug);
   return found || null;
 }

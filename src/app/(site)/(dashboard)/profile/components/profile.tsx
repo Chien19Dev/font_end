@@ -6,12 +6,7 @@ import React, { Fragment, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUser } from '@/contexts/UserContext';
 import { showError, showSuccess } from '@/lib/swal';
 import { UpdateProfileResponse } from '@/services/profileApi';
@@ -26,14 +21,14 @@ import {
   MapPinIcon,
   ShoppingBagIcon,
   UserIcon,
+  Ticket,
 } from 'lucide-react';
 import AddressesPage, { AddressesPageRef } from './AddressesPage';
 import FavoritesPage from './FavoritesPage';
 import OrdersPage from './OrdersPage';
 import Payment from './Payment';
-import PersonalInfoPage, {
-  PersonalInfoPageRef,
-} from './PersonalInfoPage';
+import PersonalInfoPage, { PersonalInfoPageRef } from './PersonalInfoPage';
+import VoucherPage from './VoucherPage';
 
 export default function ProfilePage() {
   const [loadingBtn, setLoadingBtn] = React.useState(false);
@@ -61,6 +56,12 @@ export default function ProfilePage() {
       label: 'Sản phẩm yêu thích',
       icon: HeartIcon,
       description: 'Danh sách sản phẩm đã lưu',
+    },
+    {
+      value: 'vouchers',
+      label: 'Ví Voucher của bạn',
+      icon: Ticket,
+      description: 'Quản lý ví voucher của bạn',
     },
     {
       value: 'addresses',
@@ -121,9 +122,7 @@ export default function ProfilePage() {
           <Typography variant="h3" className="mb-2">
             Chưa đăng nhập
           </Typography>
-          <p className="text-muted-foreground mb-6">
-            Vui lòng đăng nhập để xem hồ sơ của bạn.
-          </p>
+          <p className="text-muted-foreground mb-6">Vui lòng đăng nhập để xem hồ sơ của bạn.</p>
           <Link href="/auth/login">
             <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
               Đăng nhập
@@ -180,15 +179,10 @@ export default function ProfilePage() {
           <div className="lg:w-80 w-full">
             <Card className="p-6 bg-card border-border sticky top-8">
               <div className="text-center mb-4">
-                <Typography
-                  variant="h3"
-                  className="mb-1 text-card-foreground"
-                >
+                <Typography variant="h3" className="mb-1 text-card-foreground">
                   {user.full_name || 'Chưa có tên'}
                 </Typography>
-                <p className="text-muted-foreground text-sm">
-                  {user.email || 'Chưa có email'}
-                </p>
+                <p className="text-muted-foreground text-sm">{user.email || 'Chưa có email'}</p>
               </div>
               <TabsList className="flex-col h-auto bg-transparent p-0 w-full space-y-2">
                 {tabConfig.map((item) => {
@@ -213,9 +207,7 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-3 w-full">
                         <Icon className="w-5 h-5 flex-shrink-0" />
                         <div className="text-left flex-1">
-                          <div className="font-medium text-sm">
-                            {item.label}
-                          </div>
+                          <div className="font-medium text-sm">{item.label}</div>
                           <div
                             className={`text-xs mt-0.5 ${isActive ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}
                           >
@@ -234,6 +226,9 @@ export default function ProfilePage() {
               <div className="p-8">
                 <TabsContent value="personal" className="mt-0">
                   <PersonalInfoPage ref={personalInfoRef} />
+                </TabsContent>
+                <TabsContent value="vouchers" className="mt-0">
+                  <VoucherPage />
                 </TabsContent>
                 <TabsContent value="orders" className="mt-0">
                   <OrdersPage />

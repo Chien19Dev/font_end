@@ -1,10 +1,5 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-export async function register(
-  user_name: string,
-  email: string,
-  password: string,
-) {
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+export async function register(user_name: string, email: string, password: string) {
   const res = await fetch(`${BASE_URL}/auth/register`, {
     method: 'POST',
     headers: {

@@ -1,27 +1,17 @@
 'use client';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useCart } from '@/contexts/CartContext';
 import { showError, showSuccess } from '@/lib/swal';
 import { addToCart } from '@/services/cartApi';
-import { addFavorite } from '@/services/favoritesApi';
+import { addFavorite, removeFavorite, checkFavorite } from '@/services/favoritesApi';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import {
-  FaHeart,
-  FaRegHeart,
-  FaShoppingBag,
-  FaStar,
-} from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaShoppingBag, FaStar } from 'react-icons/fa';
 
 interface Variant {
   id: string;
@@ -72,12 +62,20 @@ export default function ProductCard({
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   useEffect(() => {
-    if (
-      !cardRef.current ||
-      !hoverImageRef.current ||
-      !overlayRef.current
-    )
-      return;
+    const fetchFavorite = async () => {
+      try {
+        const res = await checkFavorite(id);
+        setIsWishlisted(res.data.isFavorite);
+      } catch (error) {
+        setIsWishlisted(false);
+      }
+    };
+
+    fetchFavorite();
+  }, [id]);
+
+  useEffect(() => {
+    if (!cardRef.current || !hoverImageRef.current || !overlayRef.current) return;
 
     const tl = gsap.timeline({ paused: true });
     tl.to(hoverImageRef.current, {
@@ -109,23 +107,25 @@ export default function ProductCard({
     };
   }, []);
 
-  const mainImage =
-    image_url.length > 0 ? image_url[0] : '/placeholder.png';
+  const mainImage = image_url.length > 0 ? image_url[0] : '/placeholder.png';
   const productUrl = `/${categorySlug}/${subcategorySlug}/${id}`;
+
   const handleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isWishlisted) {
-      try {
+
+    try {
+      if (!isWishlisted) {
         const res = await addFavorite(id);
         setIsWishlisted(true);
-        showSuccess(res.message || 'Đã thêm vào sản phẩm yêu thích!');
-      } catch (error) {
-        showError('Thêm vào sản phẩm yêu thích thất bại!');
+        showSuccess(res.message);
+      } else {
+        const res = await removeFavorite(id);
+        setIsWishlisted(false);
+        showSuccess(res.message);
       }
-    } else {
-      setIsWishlisted(false);
-      showSuccess('Đã xóa khỏi sản phẩm yêu thích!');
+    } catch (error) {
+      showError('Thao tác thất bại!');
     }
   };
 
@@ -204,11 +204,7 @@ export default function ProductCard({
             <TooltipProvider>
               <div className="flex flex-wrap gap-2">
                 {variants.slice(0, 4).map((variant) => (
-                  <VariantAddButton
-                    key={variant.id}
-                    variant={variant}
-                    refreshCart={refreshCart}
-                  />
+                  <VariantAddButton key={variant.id} variant={variant} refreshCart={refreshCart} />
                 ))}
                 {variants.length > 4 && (
                   <Link
@@ -239,9 +235,7 @@ export default function ProductCard({
                   <FaStar
                     key={i}
                     className={`text-xs ${
-                      i < Math.floor(rating)
-                        ? 'text-yellow-400'
-                        : 'text-gray/20'
+                      i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray/20'
                     }`}
                   />
                 ))}
@@ -273,10 +267,7 @@ interface VariantAddButtonProps {
   refreshCart: () => void;
 }
 
-function VariantAddButton({
-  variant,
-  refreshCart,
-}: VariantAddButtonProps) {
+function VariantAddButton({ variant, refreshCart }: VariantAddButtonProps) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -326,12 +317,8 @@ function VariantAddButton({
       <TooltipContent>
         <div className="text-center">
           <p className="font-medium">Size: {variant.size}</p>
-          {variant.color && (
-            <p className="text-xs opacity-80">Màu: {variant.color}</p>
-          )}
-          <p className="text-xs opacity-80">
-            Còn lại: {variant.quantity}
-          </p>
+          {variant.color && <p className="text-xs opacity-80">Màu: {variant.color}</p>}
+          <p className="text-xs opacity-80">Còn lại: {variant.quantity}</p>
         </div>
       </TooltipContent>
     </Tooltip>

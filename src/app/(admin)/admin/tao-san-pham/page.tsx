@@ -1,12 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -22,15 +17,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Typography } from '@/components/ui/typography';
 import { showError, showSuccess } from '@/lib/swal';
 import { Category, getAllCategories } from '@/services/categoryApi';
-import {
-  createProduct,
-  CreateProductData,
-  importProductsByExcel,
-} from '@/services/productsApi';
-import {
-  getAllSubcategories,
-  Subcategory,
-} from '@/services/subcategoryApi';
+import { createProduct, CreateProductData, importProductsByExcel } from '@/services/productsApi';
+import { getAllSubcategories, Subcategory } from '@/services/subcategoryApi';
 
 interface ProductForm {
   name: string;
@@ -61,14 +49,10 @@ export default function CreateProductPage() {
     subcategory_id: '',
   });
 
-  const [variants, setVariants] = useState<Variant[]>([
-    { color: '', size: '', quantity: 1 },
-  ]);
+  const [variants, setVariants] = useState<Variant[]>([{ color: '', size: '', quantity: 1 }]);
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Subcategory[]>(
-    [],
-  );
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const [importingExcel, setImportingExcel] = useState(false);
 
@@ -78,16 +62,11 @@ export default function CreateProductPage() {
   }, []);
 
   const filteredSubcategories = useMemo(
-    () =>
-      subcategories.filter(
-        (sc) => sc.categoryId === product.category_id,
-      ),
+    () => subcategories.filter((sc) => sc.categoryId === product.category_id),
     [subcategories, product.category_id],
   );
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProduct((prev) => ({
       ...prev,
@@ -96,10 +75,7 @@ export default function CreateProductPage() {
     }));
   };
 
-  const handleSelectChange = (
-    name: keyof ProductForm,
-    value: string,
-  ) => {
+  const handleSelectChange = (name: keyof ProductForm, value: string) => {
     setProduct((prev) => ({
       ...prev,
       [name]: value,
@@ -107,22 +83,13 @@ export default function CreateProductPage() {
     }));
   };
 
-  const handleVariantChange = (
-    index: number,
-    field: keyof Variant,
-    value: string,
-  ) => {
+  const handleVariantChange = (index: number, field: keyof Variant, value: string) => {
     setVariants((prev) =>
       prev.map((v, i) =>
         i === index
           ? {
               ...v,
-              [field]:
-                field === 'quantity'
-                  ? value === ''
-                    ? 0
-                    : Number(value)
-                  : value,
+              [field]: field === 'quantity' ? (value === '' ? 0 : Number(value)) : value,
             }
           : v,
       ),
@@ -130,10 +97,7 @@ export default function CreateProductPage() {
   };
 
   const addVariant = () => {
-    setVariants((prev) => [
-      ...prev,
-      { color: '', size: '', quantity: 1 },
-    ]);
+    setVariants((prev) => [...prev, { color: '', size: '', quantity: 1 }]);
   };
 
   const removeVariant = (index: number) => {
@@ -171,15 +135,11 @@ export default function CreateProductPage() {
 
     for (const v of variants) {
       if (!v.color || !v.size) {
-        showError(
-          'Vui lòng điền đầy đủ thông tin biến thể (màu, kích cỡ).',
-        );
+        showError('Vui lòng điền đầy đủ thông tin biến thể (màu, kích cỡ).');
         return;
       }
     }
-    const filteredImages = product.image_url.filter(
-      (url) => url.trim() !== '',
-    );
+    const filteredImages = product.image_url.filter((url) => url.trim() !== '');
 
     if (filteredImages.length === 0) {
       showError('Vui lòng nhập ít nhất một ảnh chính hợp lệ.');
@@ -190,9 +150,7 @@ export default function CreateProductPage() {
       name: product.name,
       description: product.description,
       price: parseFloat(product.price),
-      discount_percent: product.discount_percent
-        ? parseFloat(product.discount_percent)
-        : undefined,
+      discount_percent: product.discount_percent ? parseFloat(product.discount_percent) : undefined,
       image_url: filteredImages,
       image_hover_url: product.image_hover_url,
       category_id: product.category_id,
@@ -244,9 +202,7 @@ export default function CreateProductPage() {
       }
       setExcelFile(null);
     } catch (error) {
-      showError(
-        error instanceof Error ? error.message : 'Import Excel thất bại!',
-      );
+      showError(error instanceof Error ? error.message : 'Import Excel thất bại!');
     } finally {
       setImportingExcel(false);
     }
@@ -260,29 +216,20 @@ export default function CreateProductPage() {
 
       <Card className="mb-6 dark:bg-gray">
         <CardHeader>
-          <h2 className="text-lg font-semibold">
-            Import hàng loạt bằng Excel
-          </h2>
+          <h2 className="text-lg font-semibold">Import hàng loạt bằng Excel</h2>
           <p className="text-sm text-muted-foreground">
-            Cột hỗ trợ: name, description, price, discount_percent,
-            image_url, image_hover_url, category/category_slug/category_id,
-            subcategory/subcategory_slug/subcategory_id, variants (JSON) hoặc
-            variant_colors + variant_sizes + variant_quantities.
+            Cột hỗ trợ: name, description, price, discount_percent, image_url, image_hover_url,
+            category/category_slug/category_id, subcategory/subcategory_slug/subcategory_id,
+            variants (JSON) hoặc variant_colors + variant_sizes + variant_quantities.
           </p>
         </CardHeader>
         <CardContent className="space-y-3">
           <Input
             type="file"
             accept=".xlsx,.xls"
-            onChange={(e) =>
-              setExcelFile(e.target.files?.[0] || null)
-            }
+            onChange={(e) => setExcelFile(e.target.files?.[0] || null)}
           />
-          {excelFile && (
-            <p className="text-sm text-muted-foreground">
-              Đã chọn: {excelFile.name}
-            </p>
-          )}
+          {excelFile && <p className="text-sm text-muted-foreground">Đã chọn: {excelFile.name}</p>}
         </CardContent>
         <CardFooter>
           <Button
@@ -332,20 +279,13 @@ export default function CreateProductPage() {
           />
 
           <div>
-            <label className="block mb-1 font-medium">
-              Ảnh chính
-            </label>
+            <label className="block mb-1 font-medium">Ảnh chính</label>
             {product.image_url.map((url, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 mb-2"
-              >
+              <div key={index} className="flex items-center gap-2 mb-2">
                 <Input
                   placeholder="URL ảnh"
                   value={url}
-                  onChange={(e) =>
-                    handleImageUrlChange(index, e.target.value)
-                  }
+                  onChange={(e) => handleImageUrlChange(index, e.target.value)}
                 />
                 <Button
                   type="button"
@@ -357,12 +297,7 @@ export default function CreateProductPage() {
                 </Button>
               </div>
             ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addImageUrl}
-              className="mt-2"
-            >
+            <Button type="button" variant="outline" onClick={addImageUrl} className="mt-2">
               Thêm ảnh
             </Button>
           </div>
@@ -376,9 +311,7 @@ export default function CreateProductPage() {
           <div className="flex lg:flex-row flex-col justify-between items-center space-y-3 lg:space-y-0 lg:space-x-3">
             <Select
               value={product.category_id}
-              onValueChange={(val) =>
-                handleSelectChange('category_id', val)
-              }
+              onValueChange={(val) => handleSelectChange('category_id', val)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Chọn danh mục" />
@@ -394,9 +327,7 @@ export default function CreateProductPage() {
 
             <Select
               value={product.subcategory_id}
-              onValueChange={(val) =>
-                handleSelectChange('subcategory_id', val)
-              }
+              onValueChange={(val) => handleSelectChange('subcategory_id', val)}
               disabled={!product.category_id}
             >
               <SelectTrigger>
@@ -420,35 +351,22 @@ export default function CreateProductPage() {
         </CardHeader>
         <CardContent className="grid gap-4">
           {variants.map((variant, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-4 gap-2 items-end"
-            >
+            <div key={index} className="grid grid-cols-4 gap-2 items-end">
               <Input
                 placeholder="Màu"
                 value={variant.color}
-                onChange={(e) =>
-                  handleVariantChange(index, 'color', e.target.value)
-                }
+                onChange={(e) => handleVariantChange(index, 'color', e.target.value)}
               />
               <Input
                 placeholder="Kích cỡ"
                 value={variant.size}
-                onChange={(e) =>
-                  handleVariantChange(index, 'size', e.target.value)
-                }
+                onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
               />
               <Input
                 type="number"
                 placeholder="Số lượng"
                 value={variant.quantity.toString()}
-                onChange={(e) =>
-                  handleVariantChange(
-                    index,
-                    'quantity',
-                    e.target.value,
-                  )
-                }
+                onChange={(e) => handleVariantChange(index, 'quantity', e.target.value)}
                 min={0}
               />
               <Button
@@ -463,11 +381,7 @@ export default function CreateProductPage() {
           ))}
         </CardContent>
         <CardFooter>
-          <Button
-            type="button"
-            onClick={addVariant}
-            variant="outline"
-          >
+          <Button type="button" onClick={addVariant} variant="outline">
             <Plus className="w-4 h-4 mr-2" /> Thêm biến thể
           </Button>
         </CardFooter>

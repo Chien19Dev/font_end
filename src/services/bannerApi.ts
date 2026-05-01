@@ -6,8 +6,7 @@ export interface BannerFormData {
   is_active: boolean;
 }
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export async function createBanner(data: BannerFormData) {
   const res = await fetch(`${BASE_URL}/banners`, {

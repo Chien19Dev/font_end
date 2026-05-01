@@ -45,7 +45,7 @@ export default function CartButton() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative p-3 h-auto rounded-xl hover:bg-card backdrop-blur-sm transition-all duration-300 ease-in-out group-hover:scale-105"
+                className="relative p-3 h-auto rounded-xl hover:bg-card bg-background backdrop-blur-sm transition-all duration-300 ease-in-out group-hover:scale-105"
                 aria-label={`Giỏ hàng - ${totalCount} sản phẩm`}
               >
                 <div className="relative">

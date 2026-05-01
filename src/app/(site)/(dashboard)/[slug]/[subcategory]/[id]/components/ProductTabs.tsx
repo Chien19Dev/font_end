@@ -31,7 +31,7 @@ export default function ProductTabs({ description }: ProductTabsProps) {
             value="description"
             className="mt-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <div className="bg-card border border-border rounded-lg p-6 shadow-none">
+            <div className="bg-card border border-border rounded-lg p-6 shadow-none mb-3">
               <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-border">
                 Thông tin sản phẩm
               </h3>
@@ -47,7 +47,7 @@ export default function ProductTabs({ description }: ProductTabsProps) {
             value="policy"
             className="mt-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <div className="bg-card border border-border rounded-lg p-6 shadow-none">
+            <div className="bg-card border border-border rounded-lg p-6 shadow-none mb-3">
               <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-border">
                 Chính sách đổi trả
               </h3>

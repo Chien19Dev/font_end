@@ -1,5 +1,4 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 const API_BASE = `${BASE_URL}/policy`;
 
 export interface PrivacyPolicy {
@@ -21,9 +20,7 @@ export async function getPrivacyPolicy(
   return res.json();
 }
 
-export async function createPrivacyPolicy(
-  data: PrivacyPolicy,
-): Promise<PrivacyPolicy> {
+export async function createPrivacyPolicy(data: PrivacyPolicy): Promise<PrivacyPolicy> {
   const res = await fetch(`${API_BASE}/post`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -33,9 +30,7 @@ export async function createPrivacyPolicy(
   return res.json();
 }
 
-export async function updatePrivacyPolicy(
-  data: PrivacyPolicy,
-): Promise<PrivacyPolicy> {
+export async function updatePrivacyPolicy(data: PrivacyPolicy): Promise<PrivacyPolicy> {
   const res = await fetch(`${API_BASE}/put`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
