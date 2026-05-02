@@ -5,6 +5,7 @@ export interface Subcategory {
   name: string;
   slug: string;
   categoryId: string;
+  image?: string;
   menu_group?: 'ao' | 'quan' | 'quan-lot' | 'phu-kien' | 'other';
   created_at?: string;
   updated_at?: string;

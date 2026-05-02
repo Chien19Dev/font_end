@@ -169,12 +169,8 @@ export default function HomeBanner({ className = '' }: HomeBannerProps) {
         </CarouselContent>
         {hasMultipleImages && (
           <>
-            <CarouselPrevious className="left-4 bg-white/90 hover:bg-white hover:text-foreground/90 border-0 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110">
-              <ChevronLeft className="h-6 w-6" />
-            </CarouselPrevious>
-            <CarouselNext className="right-4 bg-white/90 hover:bg-white hover:text-foreground/90 border-0 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110">
-              <ChevronRight className="h-6 w-6" />
-            </CarouselNext>
+            <CarouselPrevious className="left-4 border-0 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110"></CarouselPrevious>
+            <CarouselNext className="right-4 border-0 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110"></CarouselNext>
           </>
         )}
       </Carousel>

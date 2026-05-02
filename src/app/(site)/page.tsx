@@ -62,7 +62,7 @@ export default function HomePage() {
           <HomeBanner />
         </div>
         {/* <Discounts /> */}
-        <div className="mx-auto max-w-full px-4 sm:px-6 md:px-14 lg:px-10 xl:px-15 2xl:px-16 w-full h-full py-4">
+        <div className="mx-auto max-w-full px-1 sm:px-2 md:px-14 lg:px-10 xl:px-15 2xl:px-16 w-full h-full py-4">
           <SectionCategories />
         </div>
         <div className="py-5 lg:space-y-10">
@@ -241,8 +241,8 @@ function Section({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden lg:flex -left-6 w-12 h-12 bg-white/90 backdrop-blur-sm border-2 border-white shadow-xl hover:bg-white hover:shadow-2xl transition-all duration-300 text-slate-700 hover:text-slate-900 hover:scale-110" />
-            <CarouselNext className="hidden lg:flex -right-6 w-12 h-12 bg-white/90 backdrop-blur-sm border-2 border-white shadow-xl hover:bg-white hover:shadow-2xl transition-all duration-300 text-slate-700 hover:text-slate-900 hover:scale-110" />
+            <CarouselPrevious className="hidden lg:flex w-10 h-10" />
+            <CarouselNext className="hidden lg:flex w-10 h-10" />
           </Carousel>
         </div>
       )}
