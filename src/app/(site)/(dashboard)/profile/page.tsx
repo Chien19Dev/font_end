@@ -2,6 +2,7 @@ import { getProfile } from '@/services/profileApi';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import ProfilePage from './components/profile';
+import { Suspense } from 'react';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -57,5 +58,5 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 export default function Page() {
-  return <ProfilePage />;
+  return <Suspense><ProfilePage /></Suspense>;
 }
