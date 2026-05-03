@@ -96,6 +96,16 @@ const data = {
         },
       ],
     },
+    {
+      title: 'Thông tin công ty',
+      url: '#',
+      items: [
+        {
+          title: 'Thiết lập thông tin',
+          url: '/admin/info-company',
+        },
+      ],
+    },
   ],
 };
 

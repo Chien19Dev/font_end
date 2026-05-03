@@ -36,6 +36,7 @@ const SPECIAL_LABELS: Record<string, string> = {
   lever: 'Level',
   'create-category': 'Tạo danh mục',
   list: 'Danh sách bài viết',
+  'info-company': 'Tạo thông tin công ty',
 };
 
 function formatSlug(slug: string) {
