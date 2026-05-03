@@ -4,12 +4,12 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { CartItem, fetchCart, setCartItems as setCartItemsAction } from '@/store/slices/cartSlice';
 import React from 'react';
 
-interface CartContextType {
-  cartItems: CartItem[];
-  refreshCart: () => Promise<void>;
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  isLoading: boolean;
-}
+// interface CartContextType {
+//   cartItems: CartItem[];
+//   refreshCart: () => Promise<void>;
+//   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
+//   isLoading: boolean;
+// }
 
 export const useCart = () => {
   const dispatch = useAppDispatch();

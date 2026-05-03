@@ -14,6 +14,7 @@ import { Suspense } from 'react';
 import { Toaster } from 'sonner';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { CompanyInfoProvider } from '@/contexts/CompanyInfoContext';
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400'],
@@ -39,12 +40,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* <ActiveThemeProvider> */}
               <UserProvider>
                 <CartProvider>
-                  <Suspense fallback={null}>
-                    <NProgressProvider />
-                  </Suspense>
-                  <Toaster richColors position="top-right" closeButton={true} expand={false} />
-                  <div className="bg-background dark:bg-gray elysia-wear">{children}</div>
-                  {/* <Chat /> */}
+                  <CompanyInfoProvider>
+                    <Suspense fallback={null}>
+                      <NProgressProvider />
+                    </Suspense>
+                    <Toaster richColors position="top-right" closeButton={true} expand={false} />
+                    <div className="bg-background dark:bg-gray elysia-wear">{children}</div>
+                    {/* <Chat /> */}
+                  </CompanyInfoProvider>
                 </CartProvider>
               </UserProvider>
               {/* </ActiveThemeProvider> */}
